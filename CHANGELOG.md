@@ -1,4 +1,34 @@
-Change Log
+KnHttp Change Log
+==========
+
+KnHttp Version 2.0.0 *(2019-10-26)*
+----------------------------
+
+ * New library name: KnHttp
+ * New package name: ovh.karewan.knhttp
+ * TLS 1.3 support on all Android versions (with help of Conscrypt)
+ * TLS 1.0 AND 1.1 now disabled by default (too weak)
+ * Migrate code to Java 1.8
+ * Singleton instead of static class
+ * A new settings class can be use with the init method
+ * Change default timeout (Connect 15s, Read 30s, Write 30s)
+ * Merge "classic" response interfaces with okhttpresponse interfaces
+ * Remove prefetch method
+ * Remove ConnectionClassManager, AnalyticsListener, GzipRequestInterceptor
+ * Remove useless res folder
+ * Bump OkHttp Version to 3.12.6
+ * Bump Okio Version to 1.17.4
+ * Add [Conscrypt](https://github.com/google/conscrypt) dependency too support TLS 1.3 and ECC certificates on all Android versions
+ * Add [FastJson](https://github.com/alibaba/fastjson) dependency for faster JSON parsing instead of GSON
+ * Remove GSON dependency
+ * Remove RxJava, RxJava2, Jackson support
+ * Remove sample app
+ * Migrate support library to androidx
+ * Compile SDK 28, Target SDK 28, Min SDK 19
+ * Bump gradle plugin to 3.5.1
+ * Unused imports removed
+
+Fast-Android-Networking Change Log
 ==========
 
 Version 1.0.2 *(2018-07-10)*
