@@ -46,7 +46,7 @@ KnHttp.init(getApplicationContext());
 ```
 ## Customization
 
-##### Use custom settings
+#### Use custom settings
 ```java
 ANSettings settings = new ANSettings.Builder()
 		.setCallTimeout(0) // Call timeout ms (Default: 0)
@@ -60,7 +60,7 @@ ANSettings settings = new ANSettings.Builder()
 KnHttp.init(getApplicationContext(), settings);
 ```
 
-##### Use a custom OkHttpClient
+#### Use a custom OkHttpClient
 
 ```java
 OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -72,7 +72,7 @@ KnHttp.init(okHttpClient);
 
 ## Asynchronous request
 
-##### GET: response as String
+#### GET: response as String
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -90,7 +90,7 @@ KnHttp.getInstance()
 	});
 ```
 
-##### GET: response as JSON Object
+#### GET: response as JSON Object
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts/{postID}")
@@ -109,7 +109,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### GET: response as parsed Object
+#### GET: response as parsed Object
 ```java
 public class PostItem {
 	public int userId;
@@ -135,7 +135,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### GET: response as JSON Array
+#### GET: response as JSON Array
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -151,7 +151,7 @@ KnHttp.getInstance()
 			}
 		});
 ```
-##### GET: response as parsed Object list
+#### GET: response as parsed Object list
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -169,7 +169,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### POST: response as parsed Object list
+#### POST: response as parsed Object list
 ```java
 KnHttp.getInstance()
 		.post("https://jsonplaceholder.typicode.com/posts")
@@ -190,7 +190,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### HEAD and OPTIONS request are based on the GET request constructor
+#### HEAD and OPTIONS request are based on the GET request constructor
 ```java
 KnHttp.getInstance()
 		.head(url)
@@ -201,7 +201,7 @@ KnHttp.getInstance()
 		...
 ```
 
-##### PUT, DELETE, PATCH request are based on the POST request constructor
+#### PUT, DELETE, PATCH request are based on the POST request constructor
 ```java
 KnHttp.getInstance()
 		.put(url)
@@ -216,7 +216,7 @@ KnHttp.getInstance()
 		...
 ```
 
-##### Download a file
+#### Download a file
 ```java
 KnHttp.getInstance()
 		.download("https://jsonplaceholder.typicode.com/posts", absoluteDirPath, "posts.json")
@@ -240,7 +240,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Upload a file
+#### Upload a file
 ```java
 KnHttp.getInstance()
 		.upload(url)
@@ -265,7 +265,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Download image as bitmap
+#### Download image as bitmap
 ```java
 KnHttp.getInstance()
 		.get(imageUrl)
@@ -285,7 +285,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Download image directly into an ImageView
+#### Download image directly into an ImageView
 ```java
 <com.androidnetworking.widget.ANImageView
 		android:id="@+id/imageView"
@@ -300,7 +300,7 @@ imageView.setImageUrl(imageUrl);
 
 ## Synchronous requests
 
-##### GET
+#### GET
 ```java
 ANRequest request = KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -318,7 +318,7 @@ if (response.isSuccess()) {
 }
 ```
 
-##### POST
+#### POST
 ```java
 ANRequest request = KnHttp.getInstance()
 		.post("https://jsonplaceholder.typicode.com/posts")
@@ -339,7 +339,7 @@ if (response.isSuccess()) {
 }
 ```
 
-##### Download
+#### Download
 ```java
 ANRequest request = KnHttp.getInstance()
 		.download("https://jsonplaceholder.typicode.com/posts", absoluteDirPath, "posts.json")
@@ -361,7 +361,7 @@ ANError error = response.getError();
 }
 ```
 
-##### Upload
+#### Upload
 
 ```java
 ANRequest request = KnHttp.getInstance()
@@ -389,7 +389,7 @@ if (response.isSuccess()) {
 
 ## Caching (If enabled)
 
-##### How it's works ?
+#### How it's works ?
 
 * First of all the server must send cache-control in header so that is starts working.
 * Response will be cached on the basis of cache-control max-age, max-stale.
@@ -401,7 +401,7 @@ if (response.isSuccess()) {
 * If cache-control is set, it will work according to the max-age and the max-stale returned from server.
 * If the internet is NOT connected, only way to get cached response is by using getResponseOnlyIfCached().
 
-##### Do not cache response
+#### Do not cache response
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -420,7 +420,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Get response only if is cached
+#### Get response only if is cached
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -439,7 +439,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Get response only from network(internet)
+#### Get response only from network(internet)
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -458,7 +458,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Set Max Age Cache Control
+#### Set Max Age Cache Control
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -477,7 +477,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Set Max Stale Cache Control
+#### Set Max Stale Cache Control
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -498,7 +498,7 @@ KnHttp.getInstance()
 
 ## Others
 
-##### Error Code Handling
+#### Error Code Handling
 ```java
 public void onError(ANError error) {
 	if (error.getErrorCode() != 0) {
@@ -521,7 +521,7 @@ public void onError(ANError error) {
 }
 ```
 
-##### Cancelling a request
+#### Cancelling a request
 ```java
 AndroidNetworking.cancel("tag"); // All the requests with the given tag will be cancelled.
 AndroidNetworking.forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully. 
@@ -529,7 +529,7 @@ AndroidNetworking.cancelAll(); // All the requests will be cancelled.
 AndroidNetworking.forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
 ```
 
-##### Accessing Headers in Response
+#### Accessing Headers in Response
 ```java
 @Override
 public void onResponse(String response, Response okHttpResponse) {
@@ -537,19 +537,19 @@ public void onResponse(String response, Response okHttpResponse) {
 }
 ```
 
-##### Clear Bitmap Cache
+#### Clear Bitmap Cache
 ```java
 KnHttp.getInstance().evictBitmap(key); // remove a bitmap with key from LruCache
 KnHttp.getInstance().evictAllBitmap(); // clear LruCache
 ```
 
-##### Logging
+#### Logging
 ```java
 KnHttp.getInstance().enableLogging(); // simply enable logging
 KnHttp.getInstance().enableLogging(LEVEL.HEADERS); // enabling logging with level
 ```
 
-##### Custom Executor
+#### Custom Executor
 ```java
 KnHttp.getInstance()
 		.get("https://jsonplaceholder.typicode.com/posts")
@@ -568,7 +568,7 @@ KnHttp.getInstance()
 		});
 ```
 
-##### Setting Custom ContentType
+#### Setting Custom ContentType
 ```java
 KnHttp.getInstance()
 		.post("https://jsonplaceholder.typicode.com/posts")
