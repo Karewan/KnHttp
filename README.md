@@ -5,13 +5,8 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/Karewan/KnHttp/blob/master/LICENSE)
 
-### About KnHttp (Fast-Android-Networking)
-
-* https://github.com/amitshekhariitbhu/Fast-Android-Networking
-* http://amitshekhariitbhu.github.io/Fast-Android-Networking
-
 ### Why use KnHttp ?
-* TLS 1.3 support on all Android versions
+* TLS 1.3 and ECC certificates support on all Android versions (4.4+) with help of [Conscrypt](https://github.com/google/conscrypt)
 * It uses [OkHttp](http://square.github.io/okhttp/), more importantly it supports HTTP/2.
 * As it uses [Okio](https://github.com/square/okio), no more GC overhead in android applications. [Okio](https://github.com/square/okio) is made to handle GC overhead while allocating memory. [Okio](https://github.com/square/okio) does some clever things to save CPU and memory.
 * No other single library does each and everything like making request, downloading any type of file, uploading file, loading image from network in ImageView, etc. There are some libraries but they are outdated.
@@ -169,7 +164,7 @@ KnHttp.getInstance()
 		});
 ```
 
-#### POST: response as parsed Object list
+#### POST: response as parsed Object
 ```java
 KnHttp.getInstance()
 		.post("https://jsonplaceholder.typicode.com/posts")
@@ -356,7 +351,7 @@ ANResponse response = request.executeForDownload();
 if (response.isSuccess()) {
 	// download complete
 } else {
-ANError error = response.getError();
+	ANError error = response.getError();
 	// Handle Error
 }
 ```
@@ -589,10 +584,12 @@ KnHttp.getInstance()
 		});
 ```
 ### CREDITS
-* [Amit Shekhar](https://github.com/amitshekhariitbhu) - Many thanks for all his work on [Fast-Android-Networking](https://github.com/amitshekhariitbhu/Fast-Android-Networking).
+* [Amit Shekhar](https://github.com/amitshekhariitbhu) Many thanks for all his work on [Fast-Android-Networking](https://github.com/amitshekhariitbhu/Fast-Android-Networking).
 * Thanks to all contributors of [Fast-Android-Networking](https://github.com/amitshekhariitbhu/Fast-Android-Networking).
-* [Square](https://square.github.io/) - As both [OkHttp](http://square.github.io/okhttp/) and [Okio](https://github.com/square/okio) used by KnHttp is developed by [Square](https://square.github.io/).
-* [Volley](https://android.googlesource.com/platform/frameworks/volley/) - As KnHttp uses ImageLoader that is developed by [Volley](https://android.googlesource.com/platform/frameworks/volley/).
+* [Square](https://github.com/square) for [OkHttp](https://github.com/square/okhttp) and [Okio](https://github.com/square/okio)
+* [Google](https://github.com/google) for the ImageLoader class which is part of [Volley](https://github.com/google/volley).
+* [Google](https://github.com/google) for [Conscrypt](https://github.com/google/conscrypt)
+* [Alibaba](https://github.com/alibaba) for [fastjson](https://github.com/alibaba/fastjson)
 
 ### License
 ```
