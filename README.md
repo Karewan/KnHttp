@@ -282,7 +282,7 @@ KnHttp.getInstance()
 
 #### Download image directly into an ImageView
 ```java
-<com.androidnetworking.widget.ANImageView
+<ovh.karewan.knhttp.widget.ANImageView
 		android:id="@+id/imageView"
 		android:layout_width="100dp"
 		android:layout_height="100dp"
@@ -518,10 +518,10 @@ public void onError(ANError error) {
 
 #### Cancelling a request
 ```java
-AndroidNetworking.cancel("tag"); // All the requests with the given tag will be cancelled.
-AndroidNetworking.forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully. 
-AndroidNetworking.cancelAll(); // All the requests will be cancelled.  
-AndroidNetworking.forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
+KnHttp.getInstance().cancel("tag"); // All the requests with the given tag will be cancelled.
+KnHttp.getInstance().forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully. 
+KnHttp.getInstance().cancelAll(); // All the requests will be cancelled.  
+KnHttp.getInstance().forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
 ```
 
 #### Accessing Headers in Response
