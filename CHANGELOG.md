@@ -1,7 +1,14 @@
 KnHttp Change Log
 ==========
 
-KnHttp Version 2.0.0 *(2019-10-26)*
+Version 2.0.1 *(2019-12-15)*
+----------------------------
+
+ * Bump compile and target SDK version to 29
+ * Bump Okio version to 1.17.5
+ * Bump gradle plugin version to 3.5.3
+
+Version 2.0.0 *(2019-10-26)*
 ----------------------------
 
  * New library name: KnHttp
@@ -25,7 +32,7 @@ KnHttp Version 2.0.0 *(2019-10-26)*
  * Remove sample app
  * Migrate support library to androidx
  * Compile SDK 28, Target SDK 28, Min SDK 19
- * Bump gradle plugin to 3.5.1
+ * Bump gradle plugin version to 3.5.1
  * Unused imports removed
 
 Fast-Android-Networking Change Log
@@ -87,7 +94,7 @@ Version 0.3.0 *(2016-11-07)*
 Version 0.2.0 *(2016-09-16)*
 ----------------------------
 
-* New: Jackson Parser Support 
+* New: Jackson Parser Support
 * New: Making Synchronous Request - [Check Here](https://amitshekhariitbhu.github.io/Fast-Android-Networking/synchronous_request.html)
 * New: setContentType("application/json; charset=utf-8") in POST and Multipart request.
 * New: Getting OkHttpResponse in Response to access headers - [Check Here](https://amitshekhariitbhu.github.io/Fast-Android-Networking/getting_okhttpresponse.html)
