@@ -26,7 +26,7 @@ allprojects {
 
 ```groovy
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:2.0.1'
+	implementation 'com.github.Karewan:KnHttp:2.0.2'
 }
 ```
 
@@ -519,8 +519,8 @@ public void onError(ANError error) {
 #### Cancelling a request
 ```java
 KnHttp.getInstance().cancel("tag"); // All the requests with the given tag will be cancelled.
-KnHttp.getInstance().forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully. 
-KnHttp.getInstance().cancelAll(); // All the requests will be cancelled.  
+KnHttp.getInstance().forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
+KnHttp.getInstance().cancelAll(); // All the requests will be cancelled.
 KnHttp.getInstance().forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
 ```
 
@@ -593,7 +593,7 @@ KnHttp.getInstance()
 
 ### License
 ```
-   Copyright (c) 2019 Florent VIALATTE
+   Copyright (c) 2019-2020 Florent VIALATTE
    Copyright (c) 2016-2019 Amit Shekhar
 
    Licensed under the Apache License, Version 2.0 (the "License");

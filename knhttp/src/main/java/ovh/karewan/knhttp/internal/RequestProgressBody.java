@@ -1,7 +1,7 @@
 /*
     KnHttp
 
-    Copyright (c) 2019 Florent VIALATTE
+    Copyright (c) 2019-2020 Florent VIALATTE
     Copyright (c) 2016-2019 Amit Shekhar
 
     Licensed under the Apache License, Version 2.0 (the "License");
