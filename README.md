@@ -25,6 +25,13 @@ allprojects {
 ```
 
 ```groovy
+android {
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+}
+
 dependencies {
 	implementation 'com.github.Karewan:KnHttp:2.0.2'
 }
