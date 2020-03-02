@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:2.0.2'
+	implementation 'com.github.Karewan:KnHttp:2.0.3'
 }
 ```
 
