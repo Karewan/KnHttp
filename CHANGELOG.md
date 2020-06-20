@@ -1,6 +1,13 @@
 KnHttp Change Log
 ==========
 
+Version 2.0.5 *(2020-06-20)*
+----------------------------
+
+* Bump OkHttp to 3.12.12
+* Bump gradle plugin to 4.0.0
+* Bump gradle to 6.1.1
+
 Version 2.0.4 *(2020-03-27)*
 ----------------------------
 

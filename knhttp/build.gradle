@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 6
-        versionName "2.0.4"
+        versionCode 7
+        versionName "2.0.5"
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -31,7 +31,7 @@ android {
 dependencies {
 	api 'androidx.appcompat:appcompat:1.1.0'
 	api 'com.squareup.okio:okio:1.17.5'
-	api 'com.squareup.okhttp3:okhttp:3.12.10'
+	api 'com.squareup.okhttp3:okhttp:3.12.12'
 	api 'org.conscrypt:conscrypt-android:2.4.0'
 	api 'com.alibaba:fastjson:1.1.71.android'
 }
