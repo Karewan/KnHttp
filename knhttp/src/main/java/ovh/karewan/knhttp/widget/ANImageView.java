@@ -101,7 +101,7 @@ public class ANImageView extends AppCompatImageView {
         int maxWidth = wrapWidth ? 0 : width;
         int maxHeight = wrapHeight ? 0 : height;
 
-        ANImageLoader.ImageContainer newContainer = ANImageLoader.getInstance().get(mUrl,
+        mImageContainer = ANImageLoader.getInstance().get(mUrl,
                 new ANImageLoader.ImageListener() {
                     @Override
                     public void onResponse(final ANImageLoader.ImageContainer response,
@@ -125,8 +125,6 @@ public class ANImageView extends AppCompatImageView {
                         }
                     }
                 }, maxWidth, maxHeight, scaleType);
-
-        mImageContainer = newContainer;
     }
 
     private void setDefaultImageOrNull() {

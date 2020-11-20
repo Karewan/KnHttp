@@ -34,7 +34,6 @@ import ovh.karewan.knhttp.internal.InternalNetworking;
 
 import okhttp3.OkHttpClient;
 
-@SuppressWarnings("unused")
 public final class KnHttp {
     private static volatile KnHttp sInstance;
 

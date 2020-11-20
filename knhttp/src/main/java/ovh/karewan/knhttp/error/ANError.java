@@ -22,7 +22,6 @@ import ovh.karewan.knhttp.common.ANConstants;
 
 import okhttp3.Response;
 
-@SuppressWarnings({"unused"})
 public final class ANError extends Exception {
 
     private String errorBody;

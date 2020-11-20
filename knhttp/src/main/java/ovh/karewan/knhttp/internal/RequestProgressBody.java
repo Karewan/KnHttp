@@ -18,6 +18,8 @@
  */
 package ovh.karewan.knhttp.internal;
 
+import androidx.annotation.NonNull;
+
 import ovh.karewan.knhttp.common.ANConstants;
 import ovh.karewan.knhttp.interfaces.UploadProgressListener;
 import ovh.karewan.knhttp.model.Progress;
@@ -52,7 +54,7 @@ public final class RequestProgressBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(BufferedSink sink) throws IOException {
+    public void writeTo(@NonNull BufferedSink sink) throws IOException {
         if (bufferedSink == null) bufferedSink = Okio.buffer(sink(sink));
         requestBody.writeTo(bufferedSink);
         bufferedSink.flush();

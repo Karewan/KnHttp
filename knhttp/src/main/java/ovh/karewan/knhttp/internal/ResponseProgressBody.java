@@ -18,6 +18,8 @@
  */
 package ovh.karewan.knhttp.internal;
 
+import androidx.annotation.NonNull;
+
 import ovh.karewan.knhttp.common.ANConstants;
 import ovh.karewan.knhttp.interfaces.DownloadProgressListener;
 import ovh.karewan.knhttp.model.Progress;
@@ -54,6 +56,7 @@ public final class ResponseProgressBody extends ResponseBody {
     }
 
     @Override
+    @NonNull
     public BufferedSource source() {
         if (bufferedSource == null) bufferedSource = Okio.buffer(source(mResponseBody.source()));
         return bufferedSource;

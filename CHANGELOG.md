@@ -1,6 +1,17 @@
 KnHttp Change Log
 ==========
 
+Version 2.0.6 *(2020-11-20)*
+----------------------------
+
+* Updated TLS 1.3 implementation
+* Bump Conscrypt to 2.5.1
+* Bump fastjson 1.1.72
+* Bump androidx.appcompat to 1.2.0
+* Bump Gradle plugin to 4.1.1
+* Bump Gradle to 6.5
+* Various improvements
+
 Version 2.0.5 *(2020-06-20)*
 ----------------------------
 

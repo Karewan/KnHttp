@@ -66,24 +66,24 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Okio;
 
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings({"unchecked"})
 public class ANRequest<T extends ANRequest> {
 
     private final static String TAG = ANRequest.class.getSimpleName();
 
-    private int mMethod;
-    private Priority mPriority;
-    private int mRequestType;
-    private String mUrl;
+    private final int mMethod;
+    private final Priority mPriority;
+    private final int mRequestType;
+    private final String mUrl;
     private int sequenceNumber;
-    private Object mTag;
+    private final Object mTag;
     private ResponseType mResponseType;
-    private HashMap<String, List<String>> mHeadersMap;
+    private final HashMap<String, List<String>> mHeadersMap;
     private HashMap<String, String> mBodyParameterMap = new HashMap<>();
     private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
     private HashMap<String, MultipartStringBody> mMultiPartParameterMap = new HashMap<>();
-    private HashMap<String, List<String>> mQueryParameterMap;
-    private HashMap<String, String> mPathParameterMap;
+    private final HashMap<String, List<String>> mQueryParameterMap;
+    private final HashMap<String, String> mPathParameterMap;
     private HashMap<String, List<MultipartFileBody>> mMultiPartFileMap = new HashMap<>();
     private String mDirPath;
     private String mFileName;
@@ -119,9 +119,9 @@ public class ANRequest<T extends ANRequest> {
     private int mMaxWidth;
     private int mMaxHeight;
     private ImageView.ScaleType mScaleType;
-    private CacheControl mCacheControl;
-    private Executor mExecutor;
-    private OkHttpClient mOkHttpClient;
+    private final CacheControl mCacheControl;
+    private final Executor mExecutor;
+    private final OkHttpClient mOkHttpClient;
     private String mUserAgent;
     private Class mItemClass = null;
 
@@ -782,17 +782,17 @@ public class ANRequest<T extends ANRequest> {
 
     public static class GetRequestBuilder<T extends GetRequestBuilder> implements RequestBuilder {
         private Priority mPriority = Priority.MEDIUM;
-        private int mMethod;
-        private String mUrl;
+        private final int mMethod;
+        private final String mUrl;
         private Object mTag;
         private Bitmap.Config mDecodeConfig;
         private BitmapFactory.Options mBitmapOptions;
         private int mMaxWidth;
         private int mMaxHeight;
         private ImageView.ScaleType mScaleType;
-        private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
-        private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
-        private HashMap<String, String> mPathParameterMap = new HashMap<>();
+        private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
+        private final HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+        private final HashMap<String, String> mPathParameterMap = new HashMap<>();
         private CacheControl mCacheControl;
         private Executor mExecutor;
         private OkHttpClient mOkHttpClient;
@@ -989,18 +989,18 @@ public class ANRequest<T extends ANRequest> {
     public static class PostRequestBuilder<T extends PostRequestBuilder> implements RequestBuilder {
 
         private Priority mPriority = Priority.MEDIUM;
-        private int mMethod;
-        private String mUrl;
+        private final int mMethod;
+        private final String mUrl;
         private Object mTag;
         private String mApplicationJsonString = null;
         private String mStringBody = null;
         private byte[] mByte = null;
         private File mFile = null;
-        private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
-        private HashMap<String, String> mBodyParameterMap = new HashMap<>();
-        private HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
-        private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
-        private HashMap<String, String> mPathParameterMap = new HashMap<>();
+        private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
+        private final HashMap<String, String> mBodyParameterMap = new HashMap<>();
+        private final HashMap<String, String> mUrlEncodedFormBodyParameterMap = new HashMap<>();
+        private final HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+        private final HashMap<String, String> mPathParameterMap = new HashMap<>();
         private CacheControl mCacheControl;
         private Executor mExecutor;
         private OkHttpClient mOkHttpClient;
@@ -1203,13 +1203,13 @@ public class ANRequest<T extends ANRequest> {
     public static class DownloadBuilder<T extends DownloadBuilder> implements RequestBuilder {
 
         private Priority mPriority = Priority.MEDIUM;
-        private String mUrl;
+        private final String mUrl;
         private Object mTag;
-        private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
-        private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
-        private HashMap<String, String> mPathParameterMap = new HashMap<>();
-        private String mDirPath;
-        private String mFileName;
+        private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
+        private final HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+        private final HashMap<String, String> mPathParameterMap = new HashMap<>();
+        private final String mDirPath;
+        private final String mFileName;
         private CacheControl mCacheControl;
         private int mPercentageThresholdForCancelling = 0;
         private Executor mExecutor;
@@ -1355,13 +1355,13 @@ public class ANRequest<T extends ANRequest> {
     public static class MultiPartBuilder<T extends MultiPartBuilder> implements RequestBuilder {
 
         private Priority mPriority = Priority.MEDIUM;
-        private String mUrl;
+        private final String mUrl;
         private Object mTag;
-        private HashMap<String, List<String>> mHeadersMap = new HashMap<>();
-        private HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
-        private HashMap<String, String> mPathParameterMap = new HashMap<>();
-        private HashMap<String, MultipartStringBody> mMultiPartParameterMap = new HashMap<>();
-        private HashMap<String, List<MultipartFileBody>> mMultiPartFileMap = new HashMap<>();
+        private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
+        private final HashMap<String, List<String>> mQueryParameterMap = new HashMap<>();
+        private final HashMap<String, String> mPathParameterMap = new HashMap<>();
+        private final HashMap<String, MultipartStringBody> mMultiPartParameterMap = new HashMap<>();
+        private final HashMap<String, List<MultipartFileBody>> mMultiPartFileMap = new HashMap<>();
         private CacheControl mCacheControl;
         private int mPercentageThresholdForCancelling = 0;
         private Executor mExecutor;
@@ -1602,7 +1602,6 @@ public class ANRequest<T extends ANRequest> {
         }
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public String toString() {
         return "ANRequest{" +

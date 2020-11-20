@@ -39,6 +39,10 @@ import java.security.Security;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import okhttp3.ConnectionSpec;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
@@ -274,8 +278,11 @@ public final class InternalNetworking {
         else okHttpBuilder.connectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS));
 
         try {
-            // Custom SSL socket factory to add TLS 1.3 support
-            okHttpBuilder.sslSocketFactory(new InternalSSLSocketFactory(mSettings.isAllowObsoleteTls()), new InternalX509TrustManager());
+            // Custom SSL socket factory to add TLS 1.3 support on all devices
+            X509TrustManager tm = Conscrypt.getDefaultX509TrustManager();
+            SSLContext sslContext = SSLContext.getInstance("TLS", "Conscrypt");
+            sslContext.init(null, new TrustManager[] { tm }, null);
+            okHttpBuilder.sslSocketFactory(new InternalSSLSocketFactory(sslContext.getSocketFactory(), mSettings.isAllowObsoleteTls()), tm);
         } catch (Exception e) {
             e.printStackTrace();
         }
