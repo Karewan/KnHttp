@@ -1,6 +1,17 @@
 KnHttp Change Log
 ==========
 
+Version 2.0.8 *(2021-10-05)*
+----------------------------
+
+* Bump compile and target Android SDK version to 30
+* Bump Java version to 11
+* Bump org.conscrypt to 2.5.2
+* Bump androidx.appcompat to 1.3.1
+* Bump gradle plugin to 7.0.2
+* Bump gradle to 7.0.2
+* Deprecated jcenter() replaced by mavenCentral()
+
 Version 2.0.7 *(2021-02-12)*
 ----------------------------
 
