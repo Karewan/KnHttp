@@ -1,6 +1,13 @@
 KnHttp Change Log
 ==========
 
+Version 2.1.0 *(2021-10-05)*
+----------------------------
+
+* Bump minSdkVersion to 21
+* Bump OkHttp to 4.9.1
+* Bump Okio to 2.10.0
+
 Version 2.0.8 *(2021-10-05)*
 ----------------------------
 

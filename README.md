@@ -1,7 +1,7 @@
 # KnHttp
 
 [![](https://jitpack.io/v/Karewan/KnHttp.svg)](https://jitpack.io/#Karewan/KnHttp)
-[![API](https://img.shields.io/badge/API-19%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ### Why use KnHttp ?
@@ -32,7 +32,10 @@ android {
 }
 
 dependencies {
+	// Android 4.4+
 	implementation 'com.github.Karewan:KnHttp:2.0.8'
+	// Android 5.0+
+	implementation 'com.github.Karewan:KnHttp:2.1.0'
 }
 ```
 
