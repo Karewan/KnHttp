@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ### Why use KnHttp ?
-* TLS 1.3 and ECC certificates support on all Android versions (4.4+) with help of [Conscrypt](https://github.com/google/conscrypt)
+* TLS 1.3 and ECC certificates support on all Android versions (5.0+) with help of [Conscrypt](https://github.com/google/conscrypt)
 * It uses [OkHttp](http://square.github.io/okhttp/), more importantly it supports HTTP/2.
 * As it uses [Okio](https://github.com/square/okio), no more GC overhead in android applications. [Okio](https://github.com/square/okio) is made to handle GC overhead while allocating memory. [Okio](https://github.com/square/okio) does some clever things to save CPU and memory.
 * No other single library does each and everything like making request, downloading any type of file, uploading file, loading image from network in ImageView, etc. There are some libraries but they are outdated.
@@ -32,10 +32,7 @@ android {
 }
 
 dependencies {
-	// Android 4.4+
-	implementation 'com.github.Karewan:KnHttp:2.0.8'
-	// Android 5.0+
-	implementation 'com.github.Karewan:KnHttp:2.1.0'
+	implementation 'com.github.Karewan:KnHttp:2.1.1'
 }
 ```
 
@@ -59,6 +56,7 @@ ANSettings settings = new ANSettings.Builder()
 		.setWriteTimeout(30000) // Write timeout ms (Default: 30s)
 		.setAllowObsoleteTls(false) // Obsolete TLS 1.0 and 1.1 (Default: false)
 		.setEnableCache(false) // Request caching (Default: false)
+		.setEnableBrotli(true) // Brotli (+gzip) (Default: true)
 		.build();
 
 KnHttp.init(getApplicationContext(), settings);
@@ -78,7 +76,7 @@ KnHttp.init(okHttpClient);
 
 #### GET: response as String
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.build()
 		.getAsString(new StringRequestListener() {
@@ -96,7 +94,7 @@ KnHttp.getInstance()
 
 #### GET: response as JSON Object
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts/{postID}")
 		.addPathParameter("postID", "1")
 		.build()
@@ -122,7 +120,7 @@ public class PostItem {
 	public String body;
 }
 
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts/{postID}")
 		.addPathParameter("postID", "1")
 		.build()
@@ -141,7 +139,7 @@ KnHttp.getInstance()
 
 #### GET: response as JSON Array
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.build()
 		.getAsJSONArray(new JSONArrayRequestListener() {
@@ -157,7 +155,7 @@ KnHttp.getInstance()
 ```
 #### GET: response as parsed Object list
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.build()
 		.getAsObjectList(PostItem.class, new ParsedRequestListener<List<PostItem>>() {
@@ -175,7 +173,7 @@ KnHttp.getInstance()
 
 #### POST: response as parsed Object
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.post("https://jsonplaceholder.typicode.com/posts")
 		.addBodyParameter("title", "foo")
 		.addBodyParameter("body", "bar")
@@ -196,33 +194,33 @@ KnHttp.getInstance()
 
 #### HEAD and OPTIONS request are based on the GET request constructor
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.head(url)
 		...
 
-KnHttp.getInstance()
+KnHttp.gi()
 		.options(url)
 		...
 ```
 
 #### PUT, DELETE, PATCH request are based on the POST request constructor
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.put(url)
 		...
 
-KnHttp.getInstance()
+KnHttp.gi()
 		.delete(url)
 		...
 
-KnHttp.getInstance()
+KnHttp.gi()
 		.patch(url)
 		...
 ```
 
 #### Download a file
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.download("https://jsonplaceholder.typicode.com/posts", absoluteDirPath, "posts.json")
 		.build()
 		.setDownloadProgressListener(new DownloadProgressListener() {
@@ -246,7 +244,7 @@ KnHttp.getInstance()
 
 #### Upload a file
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.upload(url)
 		.addMultipartFile("avatar", avatarFile)
 		.build()
@@ -271,7 +269,7 @@ KnHttp.getInstance()
 
 #### Download image as bitmap
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get(imageUrl)
 		.setBitmapMaxHeight(100)
 		.setBitmapMaxWidth(100)
@@ -306,7 +304,7 @@ imageView.setImageUrl(imageUrl);
 
 #### GET
 ```java
-ANRequest request = KnHttp.getInstance()
+ANRequest request = KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.build();
 
@@ -324,7 +322,7 @@ if (response.isSuccess()) {
 
 #### POST
 ```java
-ANRequest request = KnHttp.getInstance()
+ANRequest request = KnHttp.gi()
 		.post("https://jsonplaceholder.typicode.com/posts")
 		.addBodyParameter("title", "foo")
 		.addBodyParameter("body", "bar")
@@ -345,7 +343,7 @@ if (response.isSuccess()) {
 
 #### Download
 ```java
-ANRequest request = KnHttp.getInstance()
+ANRequest request = KnHttp.gi()
 		.download("https://jsonplaceholder.typicode.com/posts", absoluteDirPath, "posts.json")
 		.build()
 		.setDownloadProgressListener(new DownloadProgressListener() {
@@ -368,7 +366,7 @@ if (response.isSuccess()) {
 #### Upload
 
 ```java
-ANRequest request = KnHttp.getInstance()
+ANRequest request = KnHttp.gi()
 		.upload(url)
 		.addMultipartFile("avatar", avatarFile)
 		.build()
@@ -407,7 +405,7 @@ if (response.isSuccess()) {
 
 #### Do not cache response
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.doNotCacheResponse()
 		.build()
@@ -426,7 +424,7 @@ KnHttp.getInstance()
 
 #### Get response only if is cached
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.getResponseOnlyIfCached()
 		.build()
@@ -445,7 +443,7 @@ KnHttp.getInstance()
 
 #### Get response only from network(internet)
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.getResponseOnlyFromNetwork()
 		.build()
@@ -464,7 +462,7 @@ KnHttp.getInstance()
 
 #### Set Max Age Cache Control
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.setMaxAgeCacheControl(0, TimeUnit.SECONDS)
 		.build()
@@ -483,7 +481,7 @@ KnHttp.getInstance()
 
 #### Set Max Stale Cache Control
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.setMaxStaleCacheControl(365, TimeUnit.SECONDS)
 		.build()
@@ -527,10 +525,10 @@ public void onError(ANError error) {
 
 #### Cancelling a request
 ```java
-KnHttp.getInstance().cancel("tag"); // All the requests with the given tag will be cancelled.
-KnHttp.getInstance().forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
-KnHttp.getInstance().cancelAll(); // All the requests will be cancelled.
-KnHttp.getInstance().forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
+KnHttp.gi().cancel("tag"); // All the requests with the given tag will be cancelled.
+KnHttp.gi().forceCancel("tag");  // All the requests with the given tag will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
+KnHttp.gi().cancelAll(); // All the requests will be cancelled.
+KnHttp.gi().forceCancelAll(); // All the requests will be cancelled , even if any percent threshold is set , it will be cancelled forcefully.
 ```
 
 #### Accessing Headers in Response
@@ -543,19 +541,19 @@ public void onResponse(String response, Response okHttpResponse) {
 
 #### Clear Bitmap Cache
 ```java
-KnHttp.getInstance().evictBitmap(key); // remove a bitmap with key from LruCache
-KnHttp.getInstance().evictAllBitmap(); // clear LruCache
+KnHttp.gi().evictBitmap(key); // remove a bitmap with key from LruCache
+KnHttp.gi().evictAllBitmap(); // clear LruCache
 ```
 
 #### Logging
 ```java
-KnHttp.getInstance().enableLogging(); // simply enable logging
-KnHttp.getInstance().enableLogging(LEVEL.HEADERS); // enabling logging with level
+KnHttp.gi().enableLogging(); // simply enable logging
+KnHttp.gi().enableLogging(LEVEL.HEADERS); // enabling logging with level
 ```
 
 #### Custom Executor
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.get("https://jsonplaceholder.typicode.com/posts")
 		.setExecutor(Executors.newSingleThreadExecutor()) // setting an executor to get response or completion on that executor thread
 		.build()
@@ -574,7 +572,7 @@ KnHttp.getInstance()
 
 #### Setting Custom ContentType
 ```java
-KnHttp.getInstance()
+KnHttp.gi()
 		.post("https://jsonplaceholder.typicode.com/posts")
 		.addBodyParameter("title", "foo")
 		.addBodyParameter("body", "bar")
@@ -602,7 +600,7 @@ KnHttp.getInstance()
 
 ### License
 ```
-   Copyright (c) 2019-2020 Florent VIALATTE
+   Copyright (c) 2019-2022 Florent VIALATTE
    Copyright (c) 2016-2019 Amit Shekhar
 
    Licensed under the Apache License, Version 2.0 (the "License");

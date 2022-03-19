@@ -1,6 +1,19 @@
 KnHttp Change Log
 ==========
 
+Version 2.1.1 *(2022-03-19)*
+----------------------------
+
+* Brotli support
+* getInstance() replaced by gi()
+* Bump compile and target Android SDK version to 32
+* Bump OkHttp to 4.9.3
+* Bump Okio to 3.0.0
+* Bump androidx.appcompat to 1.4.1
+* Bump gradle plugin to 7.1.2
+* Bump gradle to 7.2
+* Various improvements
+
 Version 2.1.0 *(2021-10-05)*
 ----------------------------
 
