@@ -3,6 +3,7 @@ package ovh.karewan.knhttp.common;
 /*
  * Priority levels recognized by the request server.
  */
+@SuppressWarnings("unused")
 public enum Priority {
     /*
       NOTE: DO NOT CHANGE ORDERING OF THOSE CONSTANTS UNDER ANY CIRCUMSTANCES.
@@ -28,5 +29,4 @@ public enum Priority {
 	 * Highest priority level. Used for data that are required instantly(mainly for emergency).
 	 */
 	IMMEDIATE
-
 }

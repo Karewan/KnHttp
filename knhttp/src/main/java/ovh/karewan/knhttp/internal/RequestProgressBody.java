@@ -2,7 +2,7 @@ package ovh.karewan.knhttp.internal;
 
 import androidx.annotation.NonNull;
 
-import ovh.karewan.knhttp.common.ANConstants;
+import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.interfaces.UploadProgressListener;
 import ovh.karewan.knhttp.model.Progress;
 
@@ -48,11 +48,11 @@ public final class RequestProgressBody extends RequestBody {
 			long contentLength = 0L;
 
 			@Override
-			public void write(Buffer source, long byteCount) throws IOException {
+			public void write(@NonNull Buffer source, long byteCount) throws IOException {
 				super.write(source, byteCount);
 				if (contentLength == 0) contentLength = contentLength();
 				bytesWritten += byteCount;
-				if (uploadProgressHandler != null) uploadProgressHandler.obtainMessage(ANConstants.UPDATE, new Progress(bytesWritten, contentLength)).sendToTarget();
+				if (uploadProgressHandler != null) uploadProgressHandler.obtainMessage(KnConstants.UPDATE, new Progress(bytesWritten, contentLength)).sendToTarget();
 			}
 		};
 	}

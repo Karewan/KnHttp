@@ -22,6 +22,9 @@ import okio.BufferedSource;
 
 import static okhttp3.internal.platform.Platform.INFO;
 
+import androidx.annotation.NonNull;
+
+@SuppressWarnings("unused")
 public final class HttpLoggingInterceptor implements Interceptor {
 
 	private static final Charset UTF8 = StandardCharsets.UTF_8;
@@ -119,6 +122,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 		return level;
 	}
 
+	@NonNull
 	@Override
 	public Response intercept(Chain chain) throws IOException {
 		Level level = this.level;
@@ -167,6 +171,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
 				logger.log("");
 				if (isPlaintext(buffer)) {
+					//noinspection ConstantConditions
 					logger.log(buffer.readString(charset));
 					logger.log("--> END " + request.method() + " (" + requestBody.contentLength() + "-byte body)");
 				} else {
@@ -186,6 +191,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 		long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
 
 		ResponseBody responseBody = response.body();
+		//noinspection ConstantConditions
 		long contentLength = responseBody.contentLength();
 		String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
 		logger.log("<-- " + response.code() + ' ' + response.message() + ' ' + response.request().url() + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
@@ -217,6 +223,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
 				if (contentLength != 0) {
 					logger.log("");
+					//noinspection ConstantConditions
 					logger.log(buffer.clone().readString(charset));
 				}
 

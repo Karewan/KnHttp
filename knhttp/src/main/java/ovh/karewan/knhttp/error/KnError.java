@@ -1,10 +1,11 @@
 package ovh.karewan.knhttp.error;
 
-import ovh.karewan.knhttp.common.ANConstants;
+import ovh.karewan.knhttp.common.KnConstants;
 
 import okhttp3.Response;
 
-public final class ANError extends Exception {
+@SuppressWarnings("unused")
+public final class KnError extends Exception {
 
 	private String errorBody;
 
@@ -14,37 +15,37 @@ public final class ANError extends Exception {
 
 	private Response response;
 
-	public ANError() {
+	public KnError() {
 	}
 
-	public ANError(Response response) {
+	public KnError(Response response) {
 		this.response = response;
 	}
 
-	public ANError(String message) {
+	public KnError(String message) {
 		super(message);
 	}
 
-	public ANError(String message, Response response) {
+	public KnError(String message, Response response) {
 		super(message);
 		this.response = response;
 	}
 
-	public ANError(String message, Throwable throwable) {
+	public KnError(String message, Throwable throwable) {
 		super(message, throwable);
 	}
 
-	public ANError(String message, Response response, Throwable throwable) {
+	public KnError(String message, Response response, Throwable throwable) {
 		super(message, throwable);
 		this.response = response;
 	}
 
-	public ANError(Response response, Throwable throwable) {
+	public KnError(Response response, Throwable throwable) {
 		super(throwable);
 		this.response = response;
 	}
 
-	public ANError(Throwable throwable) {
+	public KnError(Throwable throwable) {
 		super(throwable);
 	}
 
@@ -69,7 +70,7 @@ public final class ANError extends Exception {
 	}
 
 	public void setCancellationMessageInError() {
-		this.errorDetail = ANConstants.REQUEST_CANCELLED_ERROR;
+		this.errorDetail = KnConstants.REQUEST_CANCELLED_ERROR;
 	}
 
 	public String getErrorBody() {

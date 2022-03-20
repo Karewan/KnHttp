@@ -4,9 +4,9 @@ import java.util.concurrent.Executor;
 
 public interface ExecutorSupplier {
 
-	ANExecutor forNetworkTasks();
+	KnExecutor forNetworkTasks();
 
-	ANExecutor forImmediateNetworkTasks();
+	KnExecutor forImmediateNetworkTasks();
 
 	Executor forMainThreadTasks();
 }

@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import ovh.karewan.knhttp.common.ANConstants;
+import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.interfaces.UploadProgressListener;
 import ovh.karewan.knhttp.model.Progress;
 
@@ -19,7 +19,7 @@ public final class UploadProgressHandler extends Handler {
 
 	@Override
 	public void handleMessage(Message msg) {
-		if (msg.what == ANConstants.UPDATE) {
+		if (msg.what == KnConstants.UPDATE) {
 			if (mUploadProgressListener != null) {
 				final Progress progress = (Progress) msg.obj;
 				mUploadProgressListener.onProgress(progress.currentBytes, progress.totalBytes);

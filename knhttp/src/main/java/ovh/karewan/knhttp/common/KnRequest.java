@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import ovh.karewan.knhttp.core.Core;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.interfaces.BitmapRequestListener;
 import ovh.karewan.knhttp.interfaces.DownloadListener;
 import ovh.karewan.knhttp.interfaces.DownloadProgressListener;
@@ -15,7 +17,7 @@ import ovh.karewan.knhttp.interfaces.OkHttpResponseListener;
 import ovh.karewan.knhttp.interfaces.ParsedRequestListener;
 import ovh.karewan.knhttp.interfaces.StringRequestListener;
 import ovh.karewan.knhttp.interfaces.UploadProgressListener;
-import ovh.karewan.knhttp.internal.ANRequestQueue;
+import ovh.karewan.knhttp.internal.KnRequestQueue;
 import ovh.karewan.knhttp.internal.SynchronousCall;
 import ovh.karewan.knhttp.model.MultipartFileBody;
 import ovh.karewan.knhttp.model.MultipartStringBody;
@@ -48,10 +50,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Okio;
 
-@SuppressWarnings({"unchecked"})
-public class ANRequest<T extends ANRequest> {
+@SuppressWarnings({"unchecked", "rawtypes", "unused"})
+public class KnRequest<T extends KnRequest> {
 
-	private final static String TAG = ANRequest.class.getSimpleName();
+	private final static String TAG = KnRequest.class.getSimpleName();
 
 	private final int mMethod;
 	private final Priority mPriority;
@@ -73,10 +75,9 @@ public class ANRequest<T extends ANRequest> {
 	private String mStringBody = null;
 	private byte[] mByte = null;
 	private File mFile = null;
-	private static final MediaType JSON_MEDIA_TYPE =
-			MediaType.parse("application/json; charset=utf-8");
-	private static final MediaType MEDIA_TYPE_MARKDOWN =
-			MediaType.parse("text/x-markdown; charset=utf-8");
+	private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+	private static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plain; charset=utf-8");
+	private static final MediaType MEDIA_TYPE_OCTET_STREAM = MediaType.parse("application/octet-stream");
 	private MediaType customMediaType = null;
 	private static final Object sDecodeLock = new Object();
 
@@ -97,6 +98,7 @@ public class ANRequest<T extends ANRequest> {
 	private UploadProgressListener mUploadProgressListener;
 	private DownloadListener mDownloadListener;
 
+	private BitmapFactory.Options mBitmapOptions;
 	private Bitmap.Config mDecodeConfig;
 	private int mMaxWidth;
 	private int mMaxHeight;
@@ -107,13 +109,14 @@ public class ANRequest<T extends ANRequest> {
 	private String mUserAgent;
 	private Class mItemClass = null;
 
-	public ANRequest(GetRequestBuilder builder) {
+	public KnRequest(GetRequestBuilder builder) {
 		this.mRequestType = RequestType.SIMPLE;
 		this.mMethod = builder.mMethod;
 		this.mPriority = builder.mPriority;
 		this.mUrl = builder.mUrl;
 		this.mTag = builder.mTag;
 		this.mHeadersMap = builder.mHeadersMap;
+		this.mBitmapOptions = builder.mBitmapOptions;
 		this.mDecodeConfig = builder.mDecodeConfig;
 		this.mMaxHeight = builder.mMaxHeight;
 		this.mMaxWidth = builder.mMaxWidth;
@@ -126,7 +129,7 @@ public class ANRequest<T extends ANRequest> {
 		this.mUserAgent = builder.mUserAgent;
 	}
 
-	public ANRequest(PostRequestBuilder builder) {
+	public KnRequest(PostRequestBuilder builder) {
 		this.mRequestType = RequestType.SIMPLE;
 		this.mMethod = builder.mMethod;
 		this.mPriority = builder.mPriority;
@@ -150,7 +153,7 @@ public class ANRequest<T extends ANRequest> {
 		}
 	}
 
-	public ANRequest(DownloadBuilder builder) {
+	public KnRequest(DownloadBuilder builder) {
 		this.mRequestType = RequestType.DOWNLOAD;
 		this.mMethod = Method.GET;
 		this.mPriority = builder.mPriority;
@@ -168,7 +171,7 @@ public class ANRequest<T extends ANRequest> {
 		this.mUserAgent = builder.mUserAgent;
 	}
 
-	public ANRequest(MultiPartBuilder builder) {
+	public KnRequest(MultiPartBuilder builder) {
 		this.mRequestType = RequestType.MULTIPART;
 		this.mMethod = Method.POST;
 		this.mPriority = builder.mPriority;
@@ -192,90 +195,90 @@ public class ANRequest<T extends ANRequest> {
 	public void getAsJSONObject(JSONObjectRequestListener requestListener) {
 		this.mResponseType = ResponseType.JSON_OBJECT;
 		this.mJSONObjectRequestListener = requestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsJSONArray(JSONArrayRequestListener requestListener) {
 		this.mResponseType = ResponseType.JSON_ARRAY;
 		this.mJSONArrayRequestListener = requestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsString(StringRequestListener requestListener) {
 		this.mResponseType = ResponseType.STRING;
 		this.mStringRequestListener = requestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsOkHttpResponse(OkHttpResponseListener requestListener) {
 		this.mResponseType = ResponseType.OK_HTTP_RESPONSE;
 		this.mOkHttpResponseListener = requestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsBitmap(BitmapRequestListener requestListener) {
 		this.mResponseType = ResponseType.BITMAP;
 		this.mBitmapRequestListener = requestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsObject(Class objectClass, ParsedRequestListener parsedRequestListener) {
 		this.mItemClass = objectClass;
 		this.mResponseType = ResponseType.OBJECT;
 		this.mParsedRequestListener = parsedRequestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void getAsObjectList(Class objectClass, ParsedRequestListener parsedRequestListener) {
 		this.mItemClass = objectClass;
 		this.mResponseType = ResponseType.OBJECT_LIST;
 		this.mParsedRequestListener = parsedRequestListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
 	public void startDownload(DownloadListener downloadListener) {
 		this.mDownloadListener = downloadListener;
-		ANRequestQueue.gi().addRequest(this);
+		KnRequestQueue.gi().addRequest(this);
 	}
 
-	public ANResponse executeForJSONObject() {
+	public KnResponse executeForJSONObject() {
 		this.mResponseType = ResponseType.JSON_OBJECT;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForJSONArray() {
+	public KnResponse executeForJSONArray() {
 		this.mResponseType = ResponseType.JSON_ARRAY;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForString() {
+	public KnResponse executeForString() {
 		this.mResponseType = ResponseType.STRING;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForOkHttpResponse() {
+	public KnResponse executeForOkHttpResponse() {
 		this.mResponseType = ResponseType.OK_HTTP_RESPONSE;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForBitmap() {
+	public KnResponse executeForBitmap() {
 		this.mResponseType = ResponseType.BITMAP;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForObject(Class objectClass) {
+	public KnResponse executeForObject(Class objectClass) {
 		this.mItemClass = objectClass;
 		this.mResponseType = ResponseType.OBJECT;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForObjectList(Class objectClass) {
+	public KnResponse executeForObjectList(Class objectClass) {
 		this.mItemClass = objectClass;
 		this.mResponseType = ResponseType.OBJECT_LIST;
 		return SynchronousCall.execute(this);
 	}
 
-	public ANResponse executeForDownload() {
+	public KnResponse executeForDownload() {
 		return SynchronousCall.execute(this);
 	}
 
@@ -303,6 +306,7 @@ public class ANRequest<T extends ANRequest> {
 			tempUrl = tempUrl.replace("{" + entry.getKey() + "}", String.valueOf(entry.getValue()));
 		}
 
+		//noinspection ConstantConditions
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(tempUrl).newBuilder();
 		if (mQueryParameterMap != null) {
 			Set<Map.Entry<String, List<String>>> entries = mQueryParameterMap.entrySet();
@@ -375,27 +379,27 @@ public class ANRequest<T extends ANRequest> {
 		};
 	}
 
-	public void updateDownloadCompletion() {
+	public void updateDownloadCompletion(Response okHttpResponse) {
 		isDelivered = true;
 		if (mDownloadListener != null) {
 			if (!isCancelled) {
 				if (mExecutor != null) {
 					mExecutor.execute(() -> {
 						if (mDownloadListener != null) {
-							mDownloadListener.onDownloadComplete();
+							mDownloadListener.onDownloadComplete(okHttpResponse);
 						}
 						finish();
 					});
 				} else {
 					Core.gi().getExecutorSupplier().forMainThreadTasks().execute(() -> {
 						if (mDownloadListener != null) {
-							mDownloadListener.onDownloadComplete();
+							mDownloadListener.onDownloadComplete(okHttpResponse);
 						}
 						finish();
 					});
 				}
 			} else {
-				deliverError(new ANError());
+				deliverError(new KnError());
 				finish();
 			}
 		} else {
@@ -441,7 +445,7 @@ public class ANRequest<T extends ANRequest> {
 					future.cancel(true);
 				}
 				if (!isDelivered) {
-					deliverError(new ANError());
+					deliverError(new KnError());
 				}
 			}
 		} catch (Exception e) {
@@ -491,74 +495,79 @@ public class ANRequest<T extends ANRequest> {
 
 	public void finish() {
 		destroy();
-		ANRequestQueue.gi().finish(this);
+		KnRequestQueue.gi().finish(this);
 	}
 
-	public ANResponse parseResponse(Response response) {
+	public KnResponse parseResponse(Response response) {
 		switch (mResponseType) {
 			case JSON_ARRAY:
 				try {
-					return ANResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8()));
+					//noinspection ConstantConditions
+					return KnResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8()));
 				} catch (Exception e) {
-					return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
 			case JSON_OBJECT:
 				try {
-					return ANResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8()));
+					//noinspection ConstantConditions
+					return KnResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8()));
 				} catch (Exception e) {
-					return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
 			case STRING:
 				try {
-					return ANResponse.success(Okio.buffer(response.body().source()).readUtf8());
+					//noinspection ConstantConditions
+					return KnResponse.success(Okio.buffer(response.body().source()).readUtf8());
 				} catch (Exception e) {
-					return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
 			case BITMAP:
 				synchronized (sDecodeLock) {
 					try {
-						return Utils.decodeBitmap(response, mMaxWidth, mMaxHeight, mDecodeConfig, mScaleType);
+						return Utils.decodeBitmap(response, mMaxWidth, mMaxHeight, mDecodeConfig, mBitmapOptions, mScaleType);
 					} catch (Exception e) {
-						return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+						return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 					}
 				}
 			case OBJECT:
 				try {
-					return ANResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
+					//noinspection ConstantConditions
+					return KnResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
 				} catch (Exception e) {
-					return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
 			case OBJECT_LIST:
 				try {
-					return ANResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
+					//noinspection ConstantConditions
+					return KnResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
 				} catch (Exception e) {
-					return ANResponse.failed(Utils.getErrorForParse(new ANError(e)));
+					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
 		}
 		return null;
 	}
 
-	public ANError parseNetworkError(ANError anError) {
+	public KnError parseNetworkError(KnError knError) {
 		try {
-			if (anError.getResponse() != null && anError.getResponse().body() != null
-					&& anError.getResponse().body().source() != null) {
-				anError.setErrorBody(Okio.buffer(anError
-						.getResponse().body().source()).readUtf8());
+			//noinspection ConstantConditions
+			if (knError.getResponse() != null && knError.getResponse().body() != null && knError.getResponse().body().source() != null) {
+				//noinspection ConstantConditions
+				knError.setErrorBody(Okio.buffer(knError.getResponse().body().source()).readUtf8());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return anError;
+		return knError;
 	}
 
-	public synchronized void deliverError(ANError anError) {
+	public synchronized void deliverError(KnError knError) {
 		try {
 			if (!isDelivered) {
 				if (isCancelled) {
-					anError.setCancellationMessageInError();
-					anError.setErrorCode(0);
+					knError.setCancellationMessageInError();
+					knError.setErrorCode(0);
 				}
-				deliverErrorResponse(anError);
+				deliverErrorResponse(knError);
 			}
 			isDelivered = true;
 		} catch (Exception e) {
@@ -567,7 +576,7 @@ public class ANRequest<T extends ANRequest> {
 	}
 
 
-	public void deliverResponse(final ANResponse response) {
+	public void deliverResponse(final KnResponse response) {
 		try {
 			isDelivered = true;
 			if (!isCancelled) {
@@ -577,10 +586,10 @@ public class ANRequest<T extends ANRequest> {
 					Core.gi().getExecutorSupplier().forMainThreadTasks().execute(() -> deliverSuccessResponse(response));
 				}
 			} else {
-				ANError anError = new ANError();
-				anError.setCancellationMessageInError();
-				anError.setErrorCode(0);
-				deliverErrorResponse(anError);
+				KnError knError = new KnError();
+				knError.setCancellationMessageInError();
+				knError.setErrorCode(0);
+				deliverErrorResponse(knError);
 				finish();
 			}
 		} catch (Exception e) {
@@ -588,7 +597,7 @@ public class ANRequest<T extends ANRequest> {
 		}
 	}
 
-	private void deliverSuccessResponse(ANResponse response) {
+	private void deliverSuccessResponse(KnResponse response) {
 		if (mJSONObjectRequestListener != null) {
 			mJSONObjectRequestListener.onResponse((JSONObject) response.getResult(), response.getOkHttpResponse());
 		} else if (mJSONArrayRequestListener != null) {
@@ -603,21 +612,21 @@ public class ANRequest<T extends ANRequest> {
 		finish();
 	}
 
-	private void deliverErrorResponse(ANError anError) {
+	private void deliverErrorResponse(KnError knError) {
 		if (mJSONObjectRequestListener != null) {
-			mJSONObjectRequestListener.onError(anError);
+			mJSONObjectRequestListener.onError(knError);
 		} else if (mJSONArrayRequestListener != null) {
-			mJSONArrayRequestListener.onError(anError);
+			mJSONArrayRequestListener.onError(knError);
 		} else if (mStringRequestListener != null) {
-			mStringRequestListener.onError(anError);
+			mStringRequestListener.onError(knError);
 		} else if (mBitmapRequestListener != null) {
-			mBitmapRequestListener.onError(anError);
+			mBitmapRequestListener.onError(knError);
 		} else if (mParsedRequestListener != null) {
-			mParsedRequestListener.onError(anError);
+			mParsedRequestListener.onError(knError);
 		} else if (mOkHttpResponseListener != null) {
-			mOkHttpResponseListener.onError(anError);
+			mOkHttpResponseListener.onError(knError);
 		} else if (mDownloadListener != null) {
-			mDownloadListener.onError(anError);
+			mDownloadListener.onError(knError);
 		}
 	}
 
@@ -641,11 +650,11 @@ public class ANRequest<T extends ANRequest> {
 					});
 				}
 			} else {
-				ANError anError = new ANError();
-				anError.setCancellationMessageInError();
-				anError.setErrorCode(0);
+				KnError knError = new KnError();
+				knError.setCancellationMessageInError();
+				knError.setErrorCode(0);
 				if (mOkHttpResponseListener != null) {
-					mOkHttpResponseListener.onError(anError);
+					mOkHttpResponseListener.onError(knError);
 				}
 				finish();
 			}
@@ -659,22 +668,22 @@ public class ANRequest<T extends ANRequest> {
 			if (customMediaType != null) {
 				return RequestBody.create(mApplicationJsonString, customMediaType);
 			}
-			return RequestBody.create(mApplicationJsonString, JSON_MEDIA_TYPE);
+			return RequestBody.create(mApplicationJsonString, MEDIA_TYPE_JSON);
 		} else if (mStringBody != null) {
 			if (customMediaType != null) {
 				return RequestBody.create(mStringBody, customMediaType);
 			}
-			return RequestBody.create(mStringBody, MEDIA_TYPE_MARKDOWN);
+			return RequestBody.create(mStringBody, MEDIA_TYPE_TEXT);
 		} else if (mFile != null) {
 			if (customMediaType != null) {
 				return RequestBody.create(mFile, customMediaType);
 			}
-			return RequestBody.create(mFile, MEDIA_TYPE_MARKDOWN);
+			return RequestBody.create(mFile, MEDIA_TYPE_OCTET_STREAM);
 		} else if (mByte != null) {
 			if (customMediaType != null) {
 				return RequestBody.create(mByte, customMediaType);
 			}
-			return RequestBody.create(mByte, MEDIA_TYPE_MARKDOWN);
+			return RequestBody.create(mByte, MEDIA_TYPE_OCTET_STREAM);
 		} else {
 			FormBody.Builder builder = new FormBody.Builder();
 			try {
@@ -710,11 +719,14 @@ public class ANRequest<T extends ANRequest> {
 				for (MultipartFileBody fileBody : fileBodies) {
 					String fileName = fileBody.file.getName();
 					MediaType mediaType;
+
+					//noinspection ReplaceNullCheck
 					if (fileBody.contentType != null) {
 						mediaType = MediaType.parse(fileBody.contentType);
 					} else {
 						mediaType = MediaType.parse(Utils.getMimeType(fileName));
 					}
+
 					RequestBody requestBody = RequestBody.create(fileBody.file, mediaType);
 					builder.addPart(Headers.of("Content-Disposition",
 							"form-data; name=\"" + entry.getKey() + "\"; filename=\"" + fileName + "\""),
@@ -763,12 +775,12 @@ public class ANRequest<T extends ANRequest> {
 	}
 
 	public static class GetRequestBuilder<T extends GetRequestBuilder> implements RequestBuilder {
-		private Priority mPriority = Priority.MEDIUM;
+		private Priority mPriority = Priority.IMMEDIATE;
 		private final int mMethod;
 		private final String mUrl;
 		private Object mTag;
 		private Bitmap.Config mDecodeConfig;
-		private BitmapFactory.Options mBitmapOptions;
+		private BitmapFactory.Options mBitmapOptions = new BitmapFactory.Options();
 		private int mMaxWidth;
 		private int mMaxHeight;
 		private ImageView.ScaleType mScaleType;
@@ -935,8 +947,8 @@ public class ANRequest<T extends ANRequest> {
 			return (T) this;
 		}
 
-		public ANRequest build() {
-			return new ANRequest(this);
+		public KnRequest build() {
+			return new KnRequest(this);
 		}
 	}
 
@@ -970,7 +982,7 @@ public class ANRequest<T extends ANRequest> {
 
 	public static class PostRequestBuilder<T extends PostRequestBuilder> implements RequestBuilder {
 
-		private Priority mPriority = Priority.MEDIUM;
+		private Priority mPriority = Priority.IMMEDIATE;
 		private final int mMethod;
 		private final String mUrl;
 		private Object mTag;
@@ -1177,14 +1189,14 @@ public class ANRequest<T extends ANRequest> {
 			return (T) this;
 		}
 
-		public ANRequest build() {
-			return new ANRequest(this);
+		public KnRequest build() {
+			return new KnRequest(this);
 		}
 	}
 
 	public static class DownloadBuilder<T extends DownloadBuilder> implements RequestBuilder {
 
-		private Priority mPriority = Priority.MEDIUM;
+		private Priority mPriority = Priority.IMMEDIATE;
 		private final String mUrl;
 		private Object mTag;
 		private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
@@ -1329,14 +1341,14 @@ public class ANRequest<T extends ANRequest> {
 			return (T) this;
 		}
 
-		public ANRequest build() {
-			return new ANRequest(this);
+		public KnRequest build() {
+			return new KnRequest(this);
 		}
 	}
 
 	public static class MultiPartBuilder<T extends MultiPartBuilder> implements RequestBuilder {
 
-		private Priority mPriority = Priority.MEDIUM;
+		private Priority mPriority = Priority.IMMEDIATE;
 		private final String mUrl;
 		private Object mTag;
 		private final HashMap<String, List<String>> mHeadersMap = new HashMap<>();
@@ -1579,14 +1591,15 @@ public class ANRequest<T extends ANRequest> {
 			mMultiPartFileMap.put(key, fileBodies);
 		}
 
-		public ANRequest build() {
-			return new ANRequest(this);
+		public KnRequest build() {
+			return new KnRequest(this);
 		}
 	}
 
+	@NonNull
 	@Override
 	public String toString() {
-		return "ANRequest{" +
+		return "KnRequest{" +
 				"sequenceNumber='" + sequenceNumber +
 				", mMethod=" + mMethod +
 				", mPriority=" + mPriority +

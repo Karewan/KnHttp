@@ -8,10 +8,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-import ovh.karewan.knhttp.error.ANError;
-import ovh.karewan.knhttp.internal.ANImageLoader;
+import ovh.karewan.knhttp.error.KnError;
+import ovh.karewan.knhttp.internal.KnImageLoader;
 
-public class ANImageView extends AppCompatImageView {
+@SuppressWarnings("unused")
+public class KnImageView extends AppCompatImageView {
 
 	private String mUrl;
 
@@ -19,17 +20,17 @@ public class ANImageView extends AppCompatImageView {
 
 	private int mErrorImageId;
 
-	private ANImageLoader.ImageContainer mImageContainer;
+	private KnImageLoader.ImageContainer mImageContainer;
 
-	public ANImageView(Context context) {
+	public KnImageView(Context context) {
 		this(context, null);
 	}
 
-	public ANImageView(Context context, AttributeSet attrs) {
+	public KnImageView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public ANImageView(Context context, AttributeSet attrs, int defStyle) {
+	public KnImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -83,10 +84,10 @@ public class ANImageView extends AppCompatImageView {
 		int maxWidth = wrapWidth ? 0 : width;
 		int maxHeight = wrapHeight ? 0 : height;
 
-		mImageContainer = ANImageLoader.gi().get(mUrl,
-				new ANImageLoader.ImageListener() {
+		mImageContainer = KnImageLoader.gi().get(mUrl,
+				new KnImageLoader.ImageListener() {
 					@Override
-					public void onResponse(final ANImageLoader.ImageContainer response,
+					public void onResponse(final KnImageLoader.ImageContainer response,
 										   boolean isImmediate) {
 						if (isImmediate && isInLayoutPass) {
 							post(() -> onResponse(response, false));
@@ -101,7 +102,7 @@ public class ANImageView extends AppCompatImageView {
 					}
 
 					@Override
-					public void onError(ANError error) {
+					public void onError(KnError error) {
 						if (mErrorImageId != 0) {
 							setImageResource(mErrorImageId);
 						}

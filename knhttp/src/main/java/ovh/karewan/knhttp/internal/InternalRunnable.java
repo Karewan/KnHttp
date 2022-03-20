@@ -1,24 +1,25 @@
 package ovh.karewan.knhttp.internal;
 
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.common.ANResponse;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.common.KnResponse;
 import ovh.karewan.knhttp.common.Priority;
 import ovh.karewan.knhttp.common.ResponseType;
 import ovh.karewan.knhttp.core.Core;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.utils.SourceCloseUtil;
 import ovh.karewan.knhttp.utils.Utils;
 
 import okhttp3.Response;
 import ovh.karewan.knhttp.common.RequestType;
 
+@SuppressWarnings("rawtypes")
 public class InternalRunnable implements Runnable {
 
 	private final Priority priority;
 	public final int sequence;
-	public final ANRequest request;
+	public final KnRequest request;
 
-	public InternalRunnable(ANRequest request) {
+	public InternalRunnable(KnRequest request) {
 		this.request = request;
 		this.sequence = request.getSequenceNumber();
 		this.priority = request.getPriority();
@@ -47,7 +48,7 @@ public class InternalRunnable implements Runnable {
 			okHttpResponse = InternalNetworking.gi().performSimpleRequest(request);
 
 			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new ANError()));
+				deliverError(request, Utils.getErrorForConnection(new KnError()));
 				return;
 			}
 
@@ -57,11 +58,11 @@ public class InternalRunnable implements Runnable {
 			}
 
 			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				return;
 			}
 
-			ANResponse response = request.parseResponse(okHttpResponse);
+			KnResponse response = request.parseResponse(okHttpResponse);
 			if (!response.isSuccess()) {
 				deliverError(request, response.getError());
 				return;
@@ -69,7 +70,7 @@ public class InternalRunnable implements Runnable {
 			response.setOkHttpResponse(okHttpResponse);
 			request.deliverResponse(response);
 		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new ANError(e)));
+			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
 		} finally {
 			SourceCloseUtil.close(okHttpResponse, request);
 		}
@@ -81,18 +82,18 @@ public class InternalRunnable implements Runnable {
 			okHttpResponse = InternalNetworking.gi().performDownloadRequest(request);
 
 			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new ANError()));
+				deliverError(request, Utils.getErrorForConnection(new KnError()));
 				return;
 			}
 
 			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				return;
 			}
 
-			request.updateDownloadCompletion();
+			request.updateDownloadCompletion(okHttpResponse);
 		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new ANError(e)));
+			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
 		}
 	}
 
@@ -102,7 +103,7 @@ public class InternalRunnable implements Runnable {
 			okHttpResponse = InternalNetworking.gi().performUploadRequest(request);
 
 			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new ANError()));
+				deliverError(request, Utils.getErrorForConnection(new KnError()));
 				return;
 			}
 
@@ -112,11 +113,11 @@ public class InternalRunnable implements Runnable {
 			}
 
 			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				return;
 			}
 
-			ANResponse response = request.parseResponse(okHttpResponse);
+			KnResponse response = request.parseResponse(okHttpResponse);
 			if (!response.isSuccess()) {
 				deliverError(request, response.getError());
 				return;
@@ -125,7 +126,7 @@ public class InternalRunnable implements Runnable {
 			response.setOkHttpResponse(okHttpResponse);
 			request.deliverResponse(response);
 		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new ANError(e)));
+			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
 		} finally {
 			SourceCloseUtil.close(okHttpResponse, request);
 		}
@@ -135,9 +136,9 @@ public class InternalRunnable implements Runnable {
 		return priority;
 	}
 
-	private void deliverError(final ANRequest request, final ANError anError) {
+	private void deliverError(final KnRequest request, final KnError knError) {
 		Core.gi().getExecutorSupplier().forMainThreadTasks().execute(() -> {
-			request.deliverError(anError);
+			request.deliverError(knError);
 			request.finish();
 		});
 	}

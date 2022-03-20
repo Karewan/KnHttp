@@ -1,10 +1,10 @@
 package ovh.karewan.knhttp.internal;
 
-import ovh.karewan.knhttp.common.ANConstants;
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.common.ANResponse;
+import ovh.karewan.knhttp.common.KnConstants;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.common.KnResponse;
 import ovh.karewan.knhttp.common.ResponseType;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.utils.SourceCloseUtil;
 import ovh.karewan.knhttp.utils.Utils;
 
@@ -14,12 +14,12 @@ import static ovh.karewan.knhttp.common.RequestType.DOWNLOAD;
 import static ovh.karewan.knhttp.common.RequestType.MULTIPART;
 import static ovh.karewan.knhttp.common.RequestType.SIMPLE;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public final class SynchronousCall {
 
 	private SynchronousCall() {}
 
-	public static <T> ANResponse<T> execute(ANRequest request) {
+	public static <T> KnResponse<T> execute(KnRequest request) {
 		switch (request.getRequestType()) {
 			case SIMPLE:
 				return executeSimpleRequest(request);
@@ -29,83 +29,83 @@ public final class SynchronousCall {
 				return executeUploadRequest(request);
 		}
 
-		return new ANResponse<>(new ANError());
+		return new KnResponse<>(new KnError());
 	}
 
-	private static <T> ANResponse<T> executeSimpleRequest(ANRequest request) {
+	private static <T> KnResponse<T> executeSimpleRequest(KnRequest request) {
 		Response okHttpResponse = null;
 		try {
 			okHttpResponse = InternalNetworking.gi().performSimpleRequest(request);
-			if (okHttpResponse == null) return new ANResponse<>(Utils.getErrorForConnection(new ANError()));
+			if (okHttpResponse == null) return new KnResponse<>(Utils.getErrorForConnection(new KnError()));
 
 			if (request.getResponseAs() == ResponseType.OK_HTTP_RESPONSE) {
-				ANResponse response = new ANResponse(okHttpResponse);
+				KnResponse response = new KnResponse(okHttpResponse);
 				response.setOkHttpResponse(okHttpResponse);
 				return response;
 			}
 
 			if (okHttpResponse.code() >= 400) {
-				ANResponse response = new ANResponse<>(Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				KnResponse response = new KnResponse<>(Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				response.setOkHttpResponse(okHttpResponse);
 				return response;
 			}
 
-			ANResponse response = request.parseResponse(okHttpResponse);
+			KnResponse response = request.parseResponse(okHttpResponse);
 			response.setOkHttpResponse(okHttpResponse);
 			return response;
 		} catch (Exception se) {
-			return new ANResponse<>(Utils.getErrorForConnection(new ANError(se)));
+			return new KnResponse<>(Utils.getErrorForConnection(new KnError(se)));
 		} finally {
 			SourceCloseUtil.close(okHttpResponse, request);
 		}
 	}
 
-	private static <T> ANResponse<T> executeDownloadRequest(ANRequest request) {
+	private static <T> KnResponse<T> executeDownloadRequest(KnRequest request) {
 		Response okHttpResponse;
 		try {
 			okHttpResponse = InternalNetworking.gi().performDownloadRequest(request);
-			if (okHttpResponse == null) return new ANResponse<>(Utils.getErrorForConnection(new ANError()));
+			if (okHttpResponse == null) return new KnResponse<>(Utils.getErrorForConnection(new KnError()));
 
 			if (okHttpResponse.code() >= 400) {
-				ANResponse response = new ANResponse<>(Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				KnResponse response = new KnResponse<>(Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				response.setOkHttpResponse(okHttpResponse);
 				return response;
 			}
 
-			ANResponse response = new ANResponse(ANConstants.SUCCESS);
+			KnResponse response = new KnResponse(KnConstants.SUCCESS);
 			response.setOkHttpResponse(okHttpResponse);
 			return response;
 		} catch (Exception se) {
-			return new ANResponse<>(Utils.getErrorForConnection(new ANError(se)));
+			return new KnResponse<>(Utils.getErrorForConnection(new KnError(se)));
 		}
 	}
 
-	private static <T> ANResponse<T> executeUploadRequest(ANRequest request) {
+	private static <T> KnResponse<T> executeUploadRequest(KnRequest request) {
 		Response okHttpResponse = null;
 		try {
 			okHttpResponse = InternalNetworking.gi().performUploadRequest(request);
 
-			if (okHttpResponse == null) return new ANResponse<>(Utils.getErrorForConnection(new ANError()));
+			if (okHttpResponse == null) return new KnResponse<>(Utils.getErrorForConnection(new KnError()));
 
 			if (request.getResponseAs() == ResponseType.OK_HTTP_RESPONSE) {
-				ANResponse response = new ANResponse(okHttpResponse);
+				KnResponse response = new KnResponse(okHttpResponse);
 				response.setOkHttpResponse(okHttpResponse);
 				return response;
 			}
 
 			if (okHttpResponse.code() >= 400) {
-				ANResponse response = new ANResponse<>(Utils.getErrorForServerResponse(new ANError(okHttpResponse), request, okHttpResponse.code()));
+				KnResponse response = new KnResponse<>(Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
 				response.setOkHttpResponse(okHttpResponse);
 				return response;
 			}
 
-			ANResponse response = request.parseResponse(okHttpResponse);
+			KnResponse response = request.parseResponse(okHttpResponse);
 			response.setOkHttpResponse(okHttpResponse);
 			return response;
-		} catch (ANError se) {
-			return new ANResponse<>(Utils.getErrorForConnection(se));
+		} catch (KnError se) {
+			return new KnResponse<>(Utils.getErrorForConnection(se));
 		} catch (Exception e) {
-			return new ANResponse<>(Utils.getErrorForConnection(new ANError(e)));
+			return new KnResponse<>(Utils.getErrorForConnection(new KnError(e)));
 		} finally {
 			SourceCloseUtil.close(okHttpResponse, request);
 		}

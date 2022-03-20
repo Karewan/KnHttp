@@ -1,7 +1,6 @@
 package ovh.karewan.knhttp.core;
 
 public final class Core {
-
 	private static volatile Core sInstance = null;
 	private final ExecutorSupplier mExecutorSupplier;
 
@@ -19,15 +18,15 @@ public final class Core {
 		return sInstance;
 	}
 
-	public ExecutorSupplier getExecutorSupplier() {
-		return mExecutorSupplier;
+	public static void shutDown() {
+		if (sInstance == null) return;
+
+		synchronized (Core.class) {
+			sInstance = null;
+		}
 	}
 
-	public static void shutDown() {
-		if (sInstance != null) {
-			synchronized (Core.class) {
-				sInstance = null;
-			}
-		}
+	public ExecutorSupplier getExecutorSupplier() {
+		return mExecutorSupplier;
 	}
 }

@@ -2,7 +2,7 @@ package ovh.karewan.knhttp.common;
 
 import androidx.annotation.NonNull;
 
-public final class ANSettings {
+public final class KnSettings {
 	private final long mConnectTimeout;
 	private final long mReadTimeout;
 	private final long mWriteTimeout;
@@ -10,8 +10,9 @@ public final class ANSettings {
 	private final boolean mAllowObsoleteTls;
 	private final boolean mEnableCache;
 	private final boolean mEnableBrotli;
+	private final boolean mFollowRedirect;
 
-	private ANSettings(long connectTimeout, long readTimeout, long writeTimeout, long callTimeout, boolean allowObsoleteTls, boolean enableCache, boolean enableBrotli) {
+	private KnSettings(long connectTimeout, long readTimeout, long writeTimeout, long callTimeout, boolean allowObsoleteTls, boolean enableCache, boolean enableBrotli, boolean followRedirect) {
 		this.mConnectTimeout = connectTimeout;
 		this.mReadTimeout = readTimeout;
 		this.mWriteTimeout = writeTimeout;
@@ -19,6 +20,7 @@ public final class ANSettings {
 		this.mAllowObsoleteTls = allowObsoleteTls;
 		this.mEnableCache = enableCache;
 		this.mEnableBrotli = enableBrotli;
+		this.mFollowRedirect = followRedirect;
 	}
 
 	public long getConnectTimeout() {
@@ -49,6 +51,11 @@ public final class ANSettings {
 		return mEnableBrotli;
 	}
 
+	public boolean isFollowRedirect() {
+		return mFollowRedirect;
+	}
+
+	@SuppressWarnings("unused")
 	public static final class Builder {
 		private long mConnectTimeout = 15000; // 15 seconds
 		private long mReadTimeout = 30000; // 30 seconds
@@ -57,6 +64,7 @@ public final class ANSettings {
 		private boolean mAllowObsoleteTls = false; // TLS 1.3 and 1.2 Only
 		private boolean mEnableCache = false; // Cache disabled
 		private boolean mEnableBrotli = true; // Brotli enabled
+		private boolean mFollowRedirect = false; // Follow redirect disabled
 
 		public Builder setConnectTimeout(long timeout) {
 			this.mConnectTimeout = timeout;
@@ -93,9 +101,13 @@ public final class ANSettings {
 			return this;
 		}
 
+		public Builder setFollowRedirect(boolean enable) {
+			this.mFollowRedirect = enable;
+			return this;
+		}
 		@NonNull
-		public ANSettings build() {
-			return new ANSettings(mConnectTimeout, mReadTimeout, mWriteTimeout, mCallTimeout, mAllowObsoleteTls, mEnableCache, mEnableBrotli);
+		public KnSettings build() {
+			return new KnSettings(mConnectTimeout, mReadTimeout, mWriteTimeout, mCallTimeout, mAllowObsoleteTls, mEnableCache, mEnableBrotli, mFollowRedirect);
 		}
 	}
 }

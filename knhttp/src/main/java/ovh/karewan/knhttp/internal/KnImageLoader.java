@@ -9,14 +9,16 @@ import android.widget.ImageView;
 import okhttp3.Response;
 import ovh.karewan.knhttp.KnHttp;
 import ovh.karewan.knhttp.cache.LruBitmapCache;
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.interfaces.BitmapRequestListener;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public final class ANImageLoader {
+@SuppressWarnings({"unused", "rawtypes"})
+public final class KnImageLoader {
+	private static volatile KnImageLoader sInstance;
 
 	// Get max available VM memory, exceeding this amount will throw an
 	// OutOfMemory exception. Stored in kilobytes as LruCache takes an
@@ -42,12 +44,14 @@ public final class ANImageLoader {
 
 	private BitmapFactory.Options mBitmapOptions = new BitmapFactory.Options();
 
-	private static volatile ANImageLoader sInstance;
+	private KnImageLoader(ImageCache imageCache) {
+		mCache = imageCache;
+	}
 
-	public static ANImageLoader gi() {
+	public static KnImageLoader gi() {
 		if (sInstance == null) {
-			synchronized (ANImageLoader.class) {
-				if (sInstance == null)  sInstance = new ANImageLoader(new LruBitmapCache(cacheSize));
+			synchronized (KnImageLoader.class) {
+				if (sInstance == null)  sInstance = new KnImageLoader(new LruBitmapCache(cacheSize));
 			}
 		}
 
@@ -55,10 +59,13 @@ public final class ANImageLoader {
 	}
 
 	public static void shutDown() {
-		if(sInstance != null) {
-			synchronized (ANImageLoader.class) {
-				sInstance = null;
-			}
+		if(sInstance == null) return;
+
+		sInstance.mHandler.removeCallbacks(null);
+		if(sInstance.mCache != null) sInstance.mCache.evictAllBitmap();
+
+		synchronized (KnImageLoader.class) {
+			sInstance = null;
 		}
 	}
 
@@ -67,10 +74,6 @@ public final class ANImageLoader {
 		void putBitmap(String key, Bitmap bitmap);
 		void evictBitmap(String key);
 		void evictAllBitmap();
-	}
-
-	public ANImageLoader(ImageCache imageCache) {
-		mCache = imageCache;
 	}
 
 	public ImageCache getImageCache() {
@@ -86,7 +89,7 @@ public final class ANImageLoader {
 			}
 
 			@Override
-			public void onError(ANError anError) {
+			public void onError(KnError knError) {
 				if (errorImageResId != 0) view.setImageResource(errorImageResId);
 			}
 		};
@@ -94,7 +97,7 @@ public final class ANImageLoader {
 
 	public interface ImageListener {
 		void onResponse(ImageContainer response, boolean isImmediate);
-		void onError(ANError anError);
+		void onError(KnError knError);
 	}
 
 	public boolean isCached(String requestUrl, int maxWidth, int maxHeight) {
@@ -137,14 +140,14 @@ public final class ANImageLoader {
 			return imageContainer;
 		}
 
-		ANRequest newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, scaleType, cacheKey);
+		KnRequest newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, scaleType, cacheKey);
 
 		mInFlightRequests.put(cacheKey, new BatchedImageRequest(newRequest, imageContainer));
 		return imageContainer;
 	}
 
-	protected ANRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, final String cacheKey) {
-		ANRequest ANRequest = KnHttp.gi().get(requestUrl)
+	protected KnRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, final String cacheKey) {
+		KnRequest KnRequest = KnHttp.get(requestUrl)
 				.setTag("ImageRequestTag")
 				.setBitmapMaxHeight(maxHeight)
 				.setBitmapMaxWidth(maxWidth)
@@ -153,19 +156,19 @@ public final class ANImageLoader {
 				.setBitmapOptions(mBitmapOptions)
 				.build();
 
-		ANRequest.getAsBitmap(new BitmapRequestListener() {
+		KnRequest.getAsBitmap(new BitmapRequestListener() {
 			@Override
 			public void onResponse(Bitmap response, Response okHttpResponse) {
 				onGetImageSuccess(cacheKey, response);
 			}
 
 			@Override
-			public void onError(ANError anError) {
-				onGetImageError(cacheKey, anError);
+			public void onError(KnError knError) {
+				onGetImageError(cacheKey, knError);
 			}
 		});
 
-		return ANRequest;
+		return KnRequest;
 	}
 
 	public void setBitmapDecodeOptions(BitmapFactory.Options bitmapOptions) {
@@ -186,11 +189,11 @@ public final class ANImageLoader {
 		}
 	}
 
-	protected void onGetImageError(String cacheKey, ANError anError) {
+	protected void onGetImageError(String cacheKey, KnError knError) {
 		BatchedImageRequest request = mInFlightRequests.remove(cacheKey);
 
 		if (request != null) {
-			request.setError(anError);
+			request.setError(knError);
 			batchResponse(cacheKey, request);
 		}
 	}
@@ -240,25 +243,25 @@ public final class ANImageLoader {
 
 	private class BatchedImageRequest {
 
-		private final ANRequest mRequest;
+		private final KnRequest mRequest;
 
 		private Bitmap mResponseBitmap;
 
-		private ANError mANError;
+		private KnError mKnError;
 
 		private final LinkedList<ImageContainer> mContainers = new LinkedList<>();
 
-		public BatchedImageRequest(ANRequest request, ImageContainer container) {
+		public BatchedImageRequest(KnRequest request, ImageContainer container) {
 			mRequest = request;
 			mContainers.add(container);
 		}
 
-		public void setError(ANError anError) {
-			mANError = anError;
+		public void setError(KnError knError) {
+			mKnError = knError;
 		}
 
-		public ANError getError() {
-			return mANError;
+		public KnError getError() {
+			return mKnError;
 		}
 
 		public void addContainer(ImageContainer container) {
@@ -271,7 +274,7 @@ public final class ANImageLoader {
 				mRequest.cancel(true);
 				if (mRequest.isCanceled()) {
 					mRequest.destroy();
-					ANRequestQueue.gi().finish(mRequest);
+					KnRequestQueue.gi().finish(mRequest);
 				}
 				return true;
 			}

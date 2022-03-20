@@ -6,58 +6,35 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.common.ANSettings;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.common.KnSettings;
 import ovh.karewan.knhttp.core.Core;
 import ovh.karewan.knhttp.interceptors.HttpLoggingInterceptor.Level;
-import ovh.karewan.knhttp.internal.ANImageLoader;
-import ovh.karewan.knhttp.internal.ANRequestQueue;
+import ovh.karewan.knhttp.internal.KnImageLoader;
+import ovh.karewan.knhttp.internal.KnRequestQueue;
 import ovh.karewan.knhttp.internal.InternalNetworking;
 
 import okhttp3.OkHttpClient;
 
+@SuppressWarnings({"unused", "rawtypes"})
 public final class KnHttp {
-	private static volatile KnHttp sInstance;
-
-	/**
-	 * Private constructor to prevent instantiation of this class
-	 */
-	private KnHttp() {}
-
-	/**
-	 * Get instance
-	 * @return KnHttp
-	 */
-	@NonNull
-	public static KnHttp gi() {
-		if(sInstance == null) {
-			synchronized (KnHttp.class) {
-				if(sInstance == null) sInstance = new KnHttp();
-			}
-		}
-
-		return sInstance;
-	}
-
 	/**
 	 * Initializes KnHttp with the default config.
 	 */
 	public static void init(@NonNull Context context) {
-		gi();
 		InternalNetworking.gi().setSettings(null);
 		InternalNetworking.gi().initOkHttpClient(context);
-		ANRequestQueue.init();
+		KnRequestQueue.gi();
 	}
 
 	/**
 	 * Initializes KnHttp with a custom config.
 	 * @param context The context
 	 */
-	public static void init(@NonNull Context context, @NonNull ANSettings settings) {
-		gi();
+	public static void init(@NonNull Context context, @NonNull KnSettings settings) {
 		InternalNetworking.gi().setSettings(settings);
 		InternalNetworking.gi().initOkHttpClient(context.getApplicationContext());
-		ANRequestQueue.init();
+		KnRequestQueue.gi();
 	}
 
 
@@ -66,122 +43,110 @@ public final class KnHttp {
 	 * @param okHttpClient The okHttpClient
 	 */
 	public static void init(@NonNull OkHttpClient okHttpClient) {
-		gi();
 		InternalNetworking.gi().setSettings(null);
 		InternalNetworking.gi().setClient(okHttpClient);
-		ANRequestQueue.init();
+		KnRequestQueue.gi();
 	}
 
 	/**
 	 * Method to set decodeOptions
-	 *
 	 * @param decodeOptions The decode config for Bitmaps
 	 */
-	public void setBitmapDecodeOptions(@NonNull BitmapFactory.Options decodeOptions) {
-		ANImageLoader.gi().setBitmapDecodeOptions(decodeOptions);
+	public static void setBitmapDecodeOptions(@NonNull BitmapFactory.Options decodeOptions) {
+		KnImageLoader.gi().setBitmapDecodeOptions(decodeOptions);
 	}
 
 	/**
 	 * Method to make GET request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The GetRequestBuilder
 	 */
-	public ANRequest.GetRequestBuilder get(@NonNull String url) {
-		return new ANRequest.GetRequestBuilder(url);
+	public static KnRequest.GetRequestBuilder get(@NonNull String url) {
+		return new KnRequest.GetRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make HEAD request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The HeadRequestBuilder
 	 */
-	public ANRequest.HeadRequestBuilder head(@NonNull String url) {
-		return new ANRequest.HeadRequestBuilder(url);
+	public static KnRequest.HeadRequestBuilder head(@NonNull String url) {
+		return new KnRequest.HeadRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make OPTIONS request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The OptionsRequestBuilder
 	 */
-	public ANRequest.OptionsRequestBuilder options(@NonNull String url) {
-		return new ANRequest.OptionsRequestBuilder(url);
+	public static KnRequest.OptionsRequestBuilder options(@NonNull String url) {
+		return new KnRequest.OptionsRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make POST request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The PostRequestBuilder
 	 */
-	public ANRequest.PostRequestBuilder post(@NonNull String url) {
-		return new ANRequest.PostRequestBuilder(url);
+	public static KnRequest.PostRequestBuilder post(@NonNull String url) {
+		return new KnRequest.PostRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make PUT request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The PutRequestBuilder
 	 */
-	public ANRequest.PutRequestBuilder put(@NonNull String url) {
-		return new ANRequest.PutRequestBuilder(url);
+	public static KnRequest.PutRequestBuilder put(@NonNull String url) {
+		return new KnRequest.PutRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make DELETE request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The DeleteRequestBuilder
 	 */
-	public ANRequest.DeleteRequestBuilder delete(@NonNull String url) {
-		return new ANRequest.DeleteRequestBuilder(url);
+	public static KnRequest.DeleteRequestBuilder delete(@NonNull String url) {
+		return new KnRequest.DeleteRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make PATCH request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The PatchRequestBuilder
 	 */
-	public ANRequest.PatchRequestBuilder patch(@NonNull String url) {
-		return new ANRequest.PatchRequestBuilder(url);
+	public static KnRequest.PatchRequestBuilder patch(@NonNull String url) {
+		return new KnRequest.PatchRequestBuilder(url);
 	}
 
 	/**
 	 * Method to make download request
-	 *
 	 * @param url      The url on which request is to be made
 	 * @param dirPath  The directory path on which file is to be saved
 	 * @param fileName The file name with which file is to be saved
 	 * @return The DownloadBuilder
 	 */
-	public ANRequest.DownloadBuilder download(@NonNull String url, @NonNull String dirPath, @NonNull String fileName) {
-		return new ANRequest.DownloadBuilder(url, dirPath, fileName);
+	public static KnRequest.DownloadBuilder download(@NonNull String url, @NonNull String dirPath, @NonNull String fileName) {
+		return new KnRequest.DownloadBuilder(url, dirPath, fileName);
 	}
 
 	/**
 	 * Method to make upload request
-	 *
 	 * @param url The url on which request is to be made
 	 * @return The MultiPartBuilder
 	 */
-	public ANRequest.MultiPartBuilder upload(@NonNull String url) {
-		return new ANRequest.MultiPartBuilder(url);
+	public static KnRequest.MultiPartBuilder upload(@NonNull String url) {
+		return new KnRequest.MultiPartBuilder(url);
 	}
 
 	/**
 	 * Method to make Dynamic request
-	 *
 	 * @param url    The url on which request is to be made
 	 * @param method The HTTP METHOD for the request
 	 * @return The DynamicRequestBuilder
 	 */
-	public ANRequest.DynamicRequestBuilder request(@NonNull String url, int method) {
-		return new ANRequest.DynamicRequestBuilder(url, method);
+	public static KnRequest.DynamicRequestBuilder request(@NonNull String url, int method) {
+		return new KnRequest.DynamicRequestBuilder(url, method);
 	}
 
 	/**
@@ -189,8 +154,8 @@ public final class KnHttp {
 	 *
 	 * @param tag The tag with which requests are to be cancelled
 	 */
-	public void cancel(@NonNull Object tag) {
-		ANRequestQueue.gi().cancelRequestWithGivenTag(tag, false);
+	public static void cancel(@NonNull Object tag) {
+		KnRequestQueue.gi().cancelRequestWithGivenTag(tag, false);
 	}
 
 	/**
@@ -198,90 +163,80 @@ public final class KnHttp {
 	 *
 	 * @param tag The tag with which requests are to be cancelled
 	 */
-	public void forceCancel(@NonNull Object tag) {
-		ANRequestQueue.gi().cancelRequestWithGivenTag(tag, true);
+	public static void forceCancel(@NonNull Object tag) {
+		KnRequestQueue.gi().cancelRequestWithGivenTag(tag, true);
 	}
 
 	/**
 	 * Method to cancel all given request
 	 */
-	public void cancelAll() {
-		ANRequestQueue.gi().cancelAll(false);
+	public static void cancelAll() {
+		KnRequestQueue.gi().cancelAll(false);
 	}
 
 	/**
 	 * Method to force cancel all given request
 	 */
-	public void forceCancelAll() {
-		ANRequestQueue.gi().cancelAll(true);
+	public static void forceCancelAll() {
+		KnRequestQueue.gi().cancelAll(true);
 	}
 
 	/**
 	 * Method to enable logging
 	 */
-	public void enableLogging() {
+	public static void enableLogging() {
 		enableLogging(Level.BASIC);
 	}
 
 	/**
 	 * Method to enable logging with tag
-	 *
 	 * @param level The level for logging
 	 */
-	public void enableLogging(@NonNull Level level) {
+	public static void enableLogging(@NonNull Level level) {
 		InternalNetworking.gi().enableLogging(level);
 	}
 
 	/**
 	 * Method to evict a bitmap with given key from LruCache
-	 *
 	 * @param key The key of the bitmap
 	 */
-	public void evictBitmap(@NonNull String key) {
-		final ANImageLoader.ImageCache imageCache = ANImageLoader.gi().getImageCache();
+	public static void evictBitmap(@NonNull String key) {
+		final KnImageLoader.ImageCache imageCache = KnImageLoader.gi().getImageCache();
 		if (imageCache != null) imageCache.evictBitmap(key);
 	}
 
 	/**
 	 * Method to clear LruCache
 	 */
-	public void evictAllBitmap() {
-		final ANImageLoader.ImageCache imageCache = ANImageLoader.gi().getImageCache();
+	public static void evictAllBitmap() {
+		final KnImageLoader.ImageCache imageCache = KnImageLoader.gi().getImageCache();
 		if (imageCache != null) imageCache.evictAllBitmap();
 	}
 
 	/**
 	 * Method to set userAgent globally
-	 *
 	 * @param userAgent The userAgent
 	 */
-	public void setUserAgent(@Nullable String userAgent) {
+	public static void setUserAgent(@Nullable String userAgent) {
 		InternalNetworking.gi().setUserAgent(userAgent);
 	}
 
 	/**
 	 * Method to find if the request is running or not
-	 *
 	 * @param tag The tag with which request running status is to be checked
 	 * @return The request is running or not
 	 */
-	public boolean isRequestRunning(@NonNull Object tag) {
-		return ANRequestQueue.gi().isRequestRunning(tag);
+	public static boolean isRequestRunning(@NonNull Object tag) {
+		return KnRequestQueue.gi().isRequestRunning(tag);
 	}
 
 	/**
 	 * Shuts KnHttp down
 	 */
 	public static void shutDown() {
-		if(sInstance != null) {
-			Core.shutDown();
-			gi().evictAllBitmap();
-			ANImageLoader.shutDown();
-			InternalNetworking.shutDown();
-			ANRequestQueue.shutDown();
-			synchronized (KnHttp.class) {
-				sInstance = null;
-			}
-		}
+		KnImageLoader.shutDown();
+		KnRequestQueue.shutDown();
+		InternalNetworking.shutDown();
+		Core.shutDown();
 	}
 }

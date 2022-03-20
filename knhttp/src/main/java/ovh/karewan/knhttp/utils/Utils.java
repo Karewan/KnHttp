@@ -5,10 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
-import ovh.karewan.knhttp.common.ANConstants;
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.common.ANResponse;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.common.KnConstants;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.common.KnResponse;
+import ovh.karewan.knhttp.error.KnError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +21,7 @@ import okhttp3.Cache;
 import okhttp3.Response;
 import okio.Okio;
 
+@SuppressWarnings("rawtypes")
 public final class Utils {
 	public static File getDiskCacheDir(Context context, String uniqueName) {
 		return new File(context.getCacheDir(), uniqueName);
@@ -37,14 +38,11 @@ public final class Utils {
 		return contentTypeFor;
 	}
 
-	public static ANResponse<Bitmap> decodeBitmap(Response response, int maxWidth, int maxHeight, Bitmap.Config decodeConfig, ImageView.ScaleType scaleType) {
-		return decodeBitmap(response, maxWidth, maxHeight, decodeConfig, new BitmapFactory.Options(), scaleType);
-	}
-
-	public static ANResponse<Bitmap> decodeBitmap(Response response, int maxWidth, int maxHeight, Bitmap.Config decodeConfig, BitmapFactory.Options decodeOptions, ImageView.ScaleType scaleType) {
+	public static KnResponse<Bitmap> decodeBitmap(Response response, int maxWidth, int maxHeight, Bitmap.Config decodeConfig, BitmapFactory.Options decodeOptions, ImageView.ScaleType scaleType) {
 		byte[] data = new byte[0];
 
 		try {
+			//noinspection ConstantConditions
 			data = Okio.buffer(response.body().source()).readByteArray();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -75,8 +73,8 @@ public final class Utils {
 			}
 		}
 
-		if (bitmap == null) return ANResponse.failed(Utils.getErrorForParse(new ANError(response)));
-		else return ANResponse.success(bitmap);
+		if (bitmap == null) return KnResponse.failed(Utils.getErrorForParse(new KnError(response)));
+		else return KnResponse.success(bitmap);
 	}
 
 	private static int getResizedDimension(int maxPrimary, int maxSecondary, int actualPrimary, int actualSecondary, ImageView.ScaleType scaleType) {
@@ -125,9 +123,11 @@ public final class Utils {
 		int len;
 		FileOutputStream fos = null;
 		try {
+			//noinspection ConstantConditions
 			is = response.body().byteStream();
 			File dir = new File(dirPath);
-			if (!dir.exists()) dir.mkdirs();
+			if (!dir.exists()) //noinspection ResultOfMethodCallIgnored
+				dir.mkdirs();
 			File file = new File(dir, fileName);
 			fos = new FileOutputStream(file);
 			while ((len = is.read(buf)) != -1)  fos.write(buf, 0, len);
@@ -146,23 +146,23 @@ public final class Utils {
 		}
 	}
 
-	public static ANError getErrorForConnection(ANError error) {
-		error.setErrorDetail(ANConstants.CONNECTION_ERROR);
+	public static KnError getErrorForConnection(KnError error) {
+		error.setErrorDetail(KnConstants.CONNECTION_ERROR);
 		error.setErrorCode(0);
 		return error;
 	}
 
 
-	public static ANError getErrorForServerResponse(ANError error, ANRequest request, int code) {
+	public static KnError getErrorForServerResponse(KnError error, KnRequest request, int code) {
 		error = request.parseNetworkError(error);
 		error.setErrorCode(code);
-		error.setErrorDetail(ANConstants.RESPONSE_FROM_SERVER_ERROR);
+		error.setErrorDetail(KnConstants.RESPONSE_FROM_SERVER_ERROR);
 		return error;
 	}
 
-	public static ANError getErrorForParse(ANError error) {
+	public static KnError getErrorForParse(KnError error) {
 		error.setErrorCode(0);
-		error.setErrorDetail(ANConstants.PARSE_ERROR);
+		error.setErrorDetail(KnConstants.PARSE_ERROR);
 		return error;
 	}
 }

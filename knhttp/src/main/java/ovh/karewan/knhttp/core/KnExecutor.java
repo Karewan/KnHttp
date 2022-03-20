@@ -12,8 +12,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public final class ANExecutor extends ThreadPoolExecutor {
-	ANExecutor(int maxNumThreads, ThreadFactory threadFactory) {
+public final class KnExecutor extends ThreadPoolExecutor {
+	KnExecutor(int maxNumThreads, ThreadFactory threadFactory) {
 		super(maxNumThreads, maxNumThreads, 0, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>(), threadFactory);
 	}
 

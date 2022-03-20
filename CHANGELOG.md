@@ -1,6 +1,17 @@
 KnHttp Change Log
 ==========
 
+Version 3.0.0 *(2022-03-20)*
+----------------------------
+
+* KnHttp.gi() calls replaced by static calls because instance is not needed on the KnHttp class
+* OkHttpResponse added to the onDownloadComplete callback
+* FollowRedirect option added, false by default
+* Use Priority.IMMEDIATE by default
+* Default Content-Type updated for stringBody, fileBody and byteBody
+* Class names updated (breaking changes)
+* Various improvements
+
 Version 2.1.1 *(2022-03-19)*
 ----------------------------
 

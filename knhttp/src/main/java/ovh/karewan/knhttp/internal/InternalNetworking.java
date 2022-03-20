@@ -8,10 +8,10 @@ import androidx.annotation.Nullable;
 import org.conscrypt.Conscrypt;
 
 import okhttp3.brotli.BrotliInterceptor;
-import ovh.karewan.knhttp.common.ANConstants;
-import ovh.karewan.knhttp.common.ANRequest;
-import ovh.karewan.knhttp.common.ANSettings;
-import ovh.karewan.knhttp.error.ANError;
+import ovh.karewan.knhttp.common.KnConstants;
+import ovh.karewan.knhttp.common.KnRequest;
+import ovh.karewan.knhttp.common.KnSettings;
+import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.interceptors.HttpLoggingInterceptor;
 import ovh.karewan.knhttp.interceptors.HttpLoggingInterceptor.Level;
 import ovh.karewan.knhttp.utils.Utils;
@@ -41,18 +41,15 @@ import static ovh.karewan.knhttp.common.Method.PATCH;
 import static ovh.karewan.knhttp.common.Method.POST;
 import static ovh.karewan.knhttp.common.Method.PUT;
 
+@SuppressWarnings("rawtypes")
 public final class InternalNetworking {
 	private static volatile InternalNetworking sInstance;
-	private ANSettings mSettings = null;
+	private KnSettings mSettings = null;
 	private OkHttpClient mHttpClient;
-	private String mUserAgent = null;
+	private String mUserAgent = "knhttp/2";
 
 	private InternalNetworking() {}
 
-	/**
-	 * Get instance
-	 * @return InternalNetworking
-	 */
 	@NonNull
 	public static InternalNetworking gi() {
 		if(sInstance == null) {
@@ -65,18 +62,18 @@ public final class InternalNetworking {
 	}
 
 	public static void shutDown() {
-		if(sInstance != null) {
-			synchronized (InternalNetworking.class) {
-				sInstance = null;
-			}
+		if(sInstance == null) return;
+
+		synchronized (InternalNetworking.class) {
+			sInstance = null;
 		}
 	}
 
-	public void setSettings(@Nullable ANSettings settings) {
+	public void setSettings(@Nullable KnSettings settings) {
 		this.mSettings = settings;
 	}
 
-	public Response performSimpleRequest(ANRequest request) throws ANError {
+	public Response performSimpleRequest(KnRequest request) throws KnError {
 		Request okHttpRequest;
 		Response okHttpResponse;
 
@@ -110,7 +107,7 @@ public final class InternalNetworking {
 					break;
 				}
 				case OPTIONS: {
-					builder = builder.method(ANConstants.OPTIONS, null);
+					builder = builder.method(KnConstants.OPTIONS, null);
 					break;
 				}
 				case PATCH: {
@@ -128,13 +125,13 @@ public final class InternalNetworking {
 
 			okHttpResponse = request.getCall().execute();
 		} catch (IOException ioe) {
-			throw new ANError(ioe);
+			throw new KnError(ioe);
 		}
 
 		return okHttpResponse;
 	}
 
-	public Response performDownloadRequest(final ANRequest request) throws ANError {
+	public Response performDownloadRequest(final KnRequest request) throws KnError {
 		Request okHttpRequest;
 		Response okHttpResponse;
 
@@ -167,19 +164,20 @@ public final class InternalNetworking {
 		} catch (IOException ioe) {
 			try {
 				File destinationFile = new File(request.getDirPath() + File.separator + request.getFileName());
-				if (destinationFile.exists()) destinationFile.delete();
+				if (destinationFile.exists()) //noinspection ResultOfMethodCallIgnored
+					destinationFile.delete();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			throw new ANError(ioe);
+			throw new KnError(ioe);
 		}
 
 		return okHttpResponse;
 	}
 
 
-	public Response performUploadRequest(ANRequest request) throws ANError {
+	public Response performUploadRequest(KnRequest request) throws KnError {
 		Request okHttpRequest;
 		Response okHttpResponse;
 
@@ -196,7 +194,7 @@ public final class InternalNetworking {
 
 			okHttpResponse = request.getCall().execute();
 		} catch (IOException ioe) {
-			throw new ANError(ioe);
+			throw new KnError(ioe);
 		}
 
 		return okHttpResponse;
@@ -207,17 +205,17 @@ public final class InternalNetworking {
 		return mHttpClient;
 	}
 
-	public void addHeadersToRequestBuilder(Request.Builder builder, ANRequest request) {
-		if (request.getUserAgent() != null) builder.addHeader(ANConstants.USER_AGENT, request.getUserAgent());
+	public void addHeadersToRequestBuilder(Request.Builder builder, KnRequest request) {
+		if (request.getUserAgent() != null) builder.addHeader(KnConstants.USER_AGENT, request.getUserAgent());
 		else if (mUserAgent != null) {
 			request.setUserAgent(mUserAgent);
-			builder.addHeader(ANConstants.USER_AGENT, mUserAgent);
+			builder.addHeader(KnConstants.USER_AGENT, mUserAgent);
 		}
 
 		Headers requestHeaders = request.getHeaders();
 		if (requestHeaders != null) {
 			builder.headers(requestHeaders);
-			if (request.getUserAgent() != null && !requestHeaders.names().contains(ANConstants.USER_AGENT)) builder.addHeader(ANConstants.USER_AGENT, request.getUserAgent());
+			if (request.getUserAgent() != null && !requestHeaders.names().contains(KnConstants.USER_AGENT)) builder.addHeader(KnConstants.USER_AGENT, request.getUserAgent());
 		}
 	}
 
@@ -243,25 +241,23 @@ public final class InternalNetworking {
 		Security.insertProviderAt(Conscrypt.newProvider(), 1);
 
 		// If no settings, use default settings
-		if(mSettings == null) mSettings = new ANSettings.Builder().build();
+		if(mSettings == null) mSettings = new KnSettings.Builder().build();
 
 		// OkHttpClient Builder
 		OkHttpClient.Builder okHttpBuilder = new OkHttpClient().newBuilder()
 				.callTimeout(mSettings.getCallTimeout(), TimeUnit.MILLISECONDS)
 				.connectTimeout(mSettings.getConnectTimeout(), TimeUnit.MILLISECONDS)
 				.readTimeout(mSettings.getReadTimeout(), TimeUnit.MILLISECONDS)
-				.writeTimeout(mSettings.getWriteTimeout(), TimeUnit.MILLISECONDS);
+				.writeTimeout(mSettings.getWriteTimeout(), TimeUnit.MILLISECONDS)
+				.followRedirects(mSettings.isFollowRedirect())
+				.connectionSpecs(Collections.singletonList(mSettings.isAllowObsoleteTls() ? ConnectionSpec.MODERN_TLS : ConnectionSpec.RESTRICTED_TLS));
 
 		// Cache
 		if(!mSettings.isCacheEnabled() || context == null) okHttpBuilder.cache(null);
-		else okHttpBuilder.cache(Utils.getCache(context.getApplicationContext(), ANConstants.MAX_CACHE_SIZE, ANConstants.CACHE_DIR_NAME));
+		else okHttpBuilder.cache(Utils.getCache(context.getApplicationContext(), KnConstants.MAX_CACHE_SIZE, KnConstants.CACHE_DIR_NAME));
 
 		// Brotli
 		if(mSettings.isBrotliEnabled()) okHttpBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
-
-		// ConnectionSpec
-		if(!mSettings.isAllowObsoleteTls()) okHttpBuilder.connectionSpecs(Collections.singletonList(ConnectionSpec.RESTRICTED_TLS));
-		else okHttpBuilder.connectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS));
 
 		try {
 			// Custom SSL socket factory to add TLS 1.3 support on all devices

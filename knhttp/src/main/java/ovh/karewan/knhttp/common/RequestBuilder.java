@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
+@SuppressWarnings("unused")
 public interface RequestBuilder {
 
 	RequestBuilder setPriority(Priority priority);

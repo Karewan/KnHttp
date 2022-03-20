@@ -1,8 +1,9 @@
 package ovh.karewan.knhttp.interfaces;
 
-import ovh.karewan.knhttp.error.ANError;
+import okhttp3.Response;
+import ovh.karewan.knhttp.error.KnError;
 
 public interface DownloadListener {
-	void onDownloadComplete();
-	void onError(ANError anError);
+	void onDownloadComplete(Response okHttpRes);
+	void onError(KnError err);
 }

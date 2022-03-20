@@ -2,7 +2,7 @@ package ovh.karewan.knhttp.internal;
 
 import androidx.annotation.NonNull;
 
-import ovh.karewan.knhttp.common.ANRequest;
+import ovh.karewan.knhttp.common.KnRequest;
 import ovh.karewan.knhttp.common.Priority;
 import ovh.karewan.knhttp.core.Core;
 
@@ -12,19 +12,18 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class ANRequestQueue {
-	private final Set<ANRequest> mCurrentRequests = Collections.newSetFromMap(new ConcurrentHashMap<>());
+@SuppressWarnings("rawtypes")
+public final class KnRequestQueue {
+	private static volatile KnRequestQueue sInstance = null;
+	private final Set<KnRequest> mCurrentRequests = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	private final AtomicInteger mSequenceGenerator = new AtomicInteger();
-	private static volatile ANRequestQueue sInstance = null;
 
-	public static void init() {
-		gi();
-	}
+	private KnRequestQueue() {}
 
-	public static ANRequestQueue gi() {
+	public static KnRequestQueue gi() {
 		if (sInstance == null) {
-			synchronized (ANRequestQueue.class) {
-				if (sInstance == null)  sInstance = new ANRequestQueue();
+			synchronized (KnRequestQueue.class) {
+				if (sInstance == null)  sInstance = new KnRequestQueue();
 			}
 		}
 
@@ -32,21 +31,24 @@ public final class ANRequestQueue {
 	}
 
 	public static void shutDown() {
-		if(sInstance != null) {
-			synchronized (ANRequestQueue.class) {
-				sInstance = null;
-			}
+		if(sInstance == null) return;
+
+		sInstance.cancelAll(true);
+
+		synchronized (KnRequestQueue.class) {
+			sInstance = null;
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public interface RequestFilter {
-		boolean apply(ANRequest request);
+		boolean apply(KnRequest request);
 	}
 
 	private void cancel(RequestFilter filter, boolean forceCancel) {
 		try {
-			for (Iterator<ANRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
-				ANRequest request = iterator.next();
+			for (Iterator<KnRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
+				KnRequest request = iterator.next();
 				if (filter.apply(request)) {
 					request.cancel(forceCancel);
 					if (request.isCanceled()) {
@@ -62,8 +64,8 @@ public final class ANRequestQueue {
 
 	public void cancelAll(boolean forceCancel) {
 		try {
-			for (Iterator<ANRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
-				ANRequest request = iterator.next();
+			for (Iterator<KnRequest> iterator = mCurrentRequests.iterator(); iterator.hasNext(); ) {
+				KnRequest request = iterator.next();
 				request.cancel(forceCancel);
 				if (request.isCanceled()) {
 					request.destroy();
@@ -88,7 +90,7 @@ public final class ANRequestQueue {
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
-	public ANRequest addRequest(ANRequest request) {
+	public KnRequest addRequest(KnRequest request) {
 		try {
 			mCurrentRequests.add(request);
 		} catch (Exception e) {
@@ -115,7 +117,7 @@ public final class ANRequestQueue {
 		return request;
 	}
 
-	public void finish(ANRequest request) {
+	public void finish(KnRequest request) {
 		try {
 			mCurrentRequests.remove(request);
 		} catch (Exception e) {
@@ -125,7 +127,7 @@ public final class ANRequestQueue {
 
 	public boolean isRequestRunning(Object tag) {
 		try {
-			for (ANRequest request : mCurrentRequests) {
+			for (KnRequest request : mCurrentRequests) {
 				if (isRequestWithTheGivenTag(request, tag) && request.isRunning()) return true;
 			}
 		} catch (Exception e) {
@@ -135,7 +137,7 @@ public final class ANRequestQueue {
 		return false;
 	}
 
-	private boolean isRequestWithTheGivenTag(ANRequest request, Object tag) {
+	private boolean isRequestWithTheGivenTag(KnRequest request, Object tag) {
 		if (request.getTag() == null) return false;
 
 		if (request.getTag() instanceof String && tag instanceof String) {

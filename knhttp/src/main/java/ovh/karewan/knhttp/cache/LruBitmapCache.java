@@ -2,10 +2,11 @@ package ovh.karewan.knhttp.cache;
 
 import android.graphics.Bitmap;
 
-import ovh.karewan.knhttp.internal.ANImageLoader;
+import ovh.karewan.knhttp.internal.KnImageLoader;
 
+@SuppressWarnings("unused")
 public final class LruBitmapCache extends LruCache<String, Bitmap>
-		implements ANImageLoader.ImageCache {
+		implements KnImageLoader.ImageCache {
 
 	public LruBitmapCache(int maxSize) {
 		super(maxSize);

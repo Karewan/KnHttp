@@ -2,7 +2,7 @@ package ovh.karewan.knhttp.internal;
 
 import androidx.annotation.NonNull;
 
-import ovh.karewan.knhttp.common.ANConstants;
+import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.interfaces.DownloadProgressListener;
 import ovh.karewan.knhttp.model.Progress;
 
@@ -49,10 +49,10 @@ public final class ResponseProgressBody extends ResponseBody {
 			long totalBytesRead;
 
 			@Override
-			public long read(Buffer sink, long byteCount) throws IOException {
+			public long read(@NonNull Buffer sink, long byteCount) throws IOException {
 				long bytesRead = super.read(sink, byteCount);
 				totalBytesRead += ((bytesRead != -1) ? bytesRead : 0);
-				if (downloadProgressHandler != null) downloadProgressHandler.obtainMessage(ANConstants.UPDATE, new Progress(totalBytesRead, mResponseBody.contentLength())).sendToTarget();
+				if (downloadProgressHandler != null) downloadProgressHandler.obtainMessage(KnConstants.UPDATE, new Progress(totalBytesRead, mResponseBody.contentLength())).sendToTarget();
 				return bytesRead;
 			}
 		};

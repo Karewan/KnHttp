@@ -2,9 +2,12 @@ package ovh.karewan.knhttp.cache;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class LruCache<K, V> {
 	private final LinkedHashMap<K, V> map;
 
@@ -178,6 +181,7 @@ public class LruCache<K, V> {
 		return new LinkedHashMap<>(map);
 	}
 
+	@NonNull
 	@SuppressLint("DefaultLocale")
 	@Override
 	public synchronized final String toString() {
