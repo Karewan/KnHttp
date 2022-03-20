@@ -1,4 +1,7 @@
-apply plugin: 'com.android.library'
+plugins {
+	id 'com.android.library'
+	id 'maven-publish'
+}
 
 android {
 	compileSdkVersion 32
@@ -6,8 +9,8 @@ android {
 	defaultConfig {
 		minSdkVersion 21
 		targetSdkVersion 32
-		versionCode 31
-		versionName "3.0.1"
+		versionCode 32
+		versionName "3.0.2"
 		consumerProguardFiles 'proguard-rules.pro'
 	}
 
@@ -26,6 +29,10 @@ android {
 		sourceCompatibility JavaVersion.VERSION_11
 		targetCompatibility JavaVersion.VERSION_11
 	}
+
+	publishing {
+		singleVariant("release")
+	}
 }
 
 dependencies {
@@ -34,5 +41,18 @@ dependencies {
 	api 'com.squareup.okhttp3:okhttp:4.9.3'
 	api 'com.squareup.okhttp3:okhttp-brotli:4.9.3'
 	api 'org.conscrypt:conscrypt-android:2.5.2'
-	api 'com.alibaba:fastjson:1.1.72.android'
+	api 'com.alibaba:fastjson:1.1.73.android'
+}
+
+afterEvaluate {
+	publishing {
+		publications {
+			release(MavenPublication) {
+				from components.release
+				groupId = 'com.github.Karewan'
+				artifactId = 'KnHttp'
+				version = android.defaultConfig.versionName
+			}
+		}
+	}
 }
