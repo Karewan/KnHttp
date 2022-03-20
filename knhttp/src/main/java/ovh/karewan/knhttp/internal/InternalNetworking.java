@@ -250,7 +250,7 @@ public final class InternalNetworking {
 				.readTimeout(mSettings.getReadTimeout(), TimeUnit.MILLISECONDS)
 				.writeTimeout(mSettings.getWriteTimeout(), TimeUnit.MILLISECONDS)
 				.followRedirects(mSettings.isFollowRedirect())
-				.connectionSpecs(Collections.singletonList(mSettings.isAllowObsoleteTls() ? ConnectionSpec.MODERN_TLS : ConnectionSpec.RESTRICTED_TLS));
+				.connectionSpecs(Collections.singletonList(mSettings.isAllowObsoleteTls() ? ConnectionSpec.COMPATIBLE_TLS : ConnectionSpec.RESTRICTED_TLS));
 
 		// Cache
 		if(!mSettings.isCacheEnabled() || context == null) okHttpBuilder.cache(null);

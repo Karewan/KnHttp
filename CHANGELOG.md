@@ -1,6 +1,11 @@
 KnHttp Change Log
 ==========
 
+Version 3.0.1 *(2022-03-20)*
+----------------------------
+
+* Use ConnectionSpec.COMPATIBLE_TLS for option AllowObsoleteTls == true
+
 Version 3.0.0 *(2022-03-20)*
 ----------------------------
 
