@@ -1,6 +1,14 @@
 KnHttp Change Log
 ==========
 
+Version 3.0.3 *(2022-06-14)*
+----------------------------
+
+* Bump androidx.appcompat:appcompat to 1.4.2
+* Bump com.squareup.okio:okio to 3.1.0
+* Bump com.squareup.okhttp3 to okhttp:4.10.0
+* Bump com.squareup.okhttp3 to okhttp-brotli:4.10.0
+
 Version 3.0.2 *(2022-03-20)*
 ----------------------------
 
