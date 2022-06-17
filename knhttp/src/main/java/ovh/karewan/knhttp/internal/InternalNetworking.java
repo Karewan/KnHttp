@@ -18,6 +18,7 @@ import ovh.karewan.knhttp.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Provider;
 import java.security.Security;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -237,8 +238,11 @@ public final class InternalNetworking {
 	 * @param context The context
 	 */
 	public void initOkHttpClient(@Nullable Context context) {
-		// Use Conscrypt as the main provider
-		Security.insertProviderAt(Conscrypt.newProvider(), 1);
+		// Init Conscrypt
+		Provider conscrypt = Conscrypt.newProvider();
+
+		// Add as provider
+		Security.insertProviderAt(conscrypt, 1);
 
 		// If no settings, use default settings
 		if(mSettings == null) mSettings = new KnSettings.Builder().build();
@@ -262,7 +266,7 @@ public final class InternalNetworking {
 		try {
 			// Custom SSL socket factory to add TLS 1.3 support on all devices
 			X509TrustManager tm = Conscrypt.getDefaultX509TrustManager();
-			SSLContext sslContext = SSLContext.getInstance("TLS", "Conscrypt");
+			SSLContext sslContext = SSLContext.getInstance("TLS", conscrypt);
 			sslContext.init(null, new TrustManager[] { tm }, null);
 			okHttpBuilder.sslSocketFactory(new InternalSSLSocketFactory(sslContext.getSocketFactory(), mSettings.isAllowObsoleteTls()), tm);
 		} catch (Exception e) {
@@ -278,10 +282,6 @@ public final class InternalNetworking {
 	 * @param okHttpClient The OkHttpClient
 	 */
 	public void setClient(@NonNull OkHttpClient okHttpClient) {
-		// Use Conscrypt as the main provider
-		Security.insertProviderAt(Conscrypt.newProvider(), 1);
-
-		// Set the client
 		mHttpClient = okHttpClient;
 	}
 }
