@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:3.0.4'
+	implementation 'com.github.Karewan:KnHttp:3.0.5'
 }
 ```
 
@@ -670,6 +670,30 @@ KnHttp.post("https://jsonplaceholder.typicode.com/posts")
 			}
 		});
 ```
+
+#### Set global user-agent
+```java
+KnHttp.setUserAgent("MyApp/" + BuildConfig.VERSION_NAME);
+```
+
+#### Set per request user-agent
+```java
+KnHttp.get("https://jsonplaceholder.typicode.com/posts")
+		.setUserAgent("MyApp/" + BuildConfig.VERSION_NAME)
+		.build()
+		.getAsString(new StringRequestListener() {
+			@Override
+			public void onResponse(String str, Response okHttpRes) {
+				// do anything with response
+			}
+
+			@Override
+			public void onError(KnError err) {
+				// handle error
+			}
+		});
+```
+
 ### CREDITS
 * [Amit Shekhar](https://github.com/amitshekhariitbhu) Many thanks for all his work on [Fast-Android-Networking](https://github.com/amitshekhariitbhu/Fast-Android-Networking).
 * Thanks to all contributors of [Fast-Android-Networking](https://github.com/amitshekhariitbhu/Fast-Android-Networking).

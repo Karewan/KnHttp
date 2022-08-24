@@ -47,7 +47,7 @@ public final class InternalNetworking {
 	private static volatile InternalNetworking sInstance;
 	private KnSettings mSettings = null;
 	private OkHttpClient mHttpClient;
-	private String mUserAgent = "knhttp/2";
+	private String mUserAgent = "KnHttp/3";
 
 	private InternalNetworking() {}
 
