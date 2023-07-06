@@ -4,13 +4,14 @@ plugins {
 }
 
 android {
-	compileSdkVersion 32
+	namespace 'ovh.karewan.knhttp'
+	compileSdk 33
 
 	defaultConfig {
-		minSdkVersion 21
-		targetSdkVersion 32
-		versionCode 35
-		versionName "3.0.5"
+		minSdk 21
+		targetSdk 33
+		versionCode 36
+		versionName "3.1.0"
 		consumerProguardFiles 'proguard-rules.pro'
 	}
 
@@ -36,14 +37,15 @@ android {
 }
 
 dependencies {
-	api 'androidx.appcompat:appcompat:1.5.0'
+	implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
+	implementation 'androidx.annotation:annotation:1.6.0'
 	api 'com.squareup.okio:okio:3.2.0'
-	api ('com.squareup.okhttp3:okhttp:4.10.0') {
+	api ('com.squareup.okhttp3:okhttp:4.11.0') {
 		exclude group: 'com.squareup.okio', module:'okio'
 		exclude group: 'com.squareup.okio', module:'okio-jvm'
 	}
-	api 'com.squareup.okhttp3:okhttp-brotli:4.10.0'
-	api 'org.conscrypt:conscrypt-android:2.5.2'
+	implementation 'com.squareup.okhttp3:okhttp-brotli:4.11.0'
+	implementation 'org.conscrypt:conscrypt-android:2.5.2'
 	api 'com.alibaba:fastjson:1.1.73.android'
 }
 

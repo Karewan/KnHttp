@@ -9,7 +9,7 @@
 * Brotli + Gzip support
 * It uses [OkHttp](http://square.github.io/okhttp/), more importantly it supports HTTP/2.
 * As it uses [Okio](https://github.com/square/okio), no more GC overhead in android applications. [Okio](https://github.com/square/okio) is made to handle GC overhead while allocating memory. [Okio](https://github.com/square/okio) does some clever things to save CPU and memory.
-* No other single library does each and everything like making request, downloading any type of file, uploading file, loading image from network in ImageView, etc. There are some libraries but they are outdated.
+* No other single library does each and everything like making request, downloading any type of file, uploading file, etc. There are some libraries but they are outdated.
 * No other library provides simple interface for doing all types of things in networking like setting priority, cancelling, etc.
 * Recent removal of HttpClient in Android Marshmallow(Android M) made other networking libraries obsolete.
 
@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:3.0.5'
+	implementation 'com.github.Karewan:KnHttp:3.1.0'
 }
 ```
 
@@ -360,19 +360,6 @@ KnHttp.get(imageUrl)
 				// handle error
 			}
 		});
-```
-
-#### Download image directly into an ImageView
-```java
-<ovh.karewan.knhttp.widget.KnImageView
-		android:id="@+id/imageView"
-		android:layout_width="100dp"
-		android:layout_height="100dp"
-		android:layout_gravity="center" />
-
-imageView.setDefaultImageResId(R.drawable.default);
-imageView.setErrorImageResId(R.drawable.error);
-imageView.setImageUrl(imageUrl);
 ```
 
 ## Synchronous requests
@@ -704,7 +691,7 @@ KnHttp.get("https://jsonplaceholder.typicode.com/posts")
 
 ### License
 ```
-   Copyright (c) 2019-2022 Florent VIALATTE
+   Copyright (c) 2019-2023 Florent VIALATTE
    Copyright (c) 2016-2019 Amit Shekhar
 
    Licensed under the Apache License, Version 2.0 (the "License");

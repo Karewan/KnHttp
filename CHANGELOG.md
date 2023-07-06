@@ -1,6 +1,19 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.0 *(2023-07-06)*
+----------------------------
+* Bump compile and target Android SDK version to 33
+* Bump com.squareup.okhttp3:okhttp to 4.11.0
+* Bump com.squareup.okhttp3:okhttp-brotli to 4.11.0
+* Bump gradle plugin to 7.4.2
+* Bump gradle to 7.5
+* Add org.jetbrains.kotlin:kotlin-bom:1.8.22 to improve compatibility of Kotlin versions
+* Add proguard rules for compatibility of latest versions of Android Studio
+* Replace androidx.appcompat:appcompat:1.5.0 by androidx.annotation:annotation:1.6.0
+* Remove KnImageView class
+* Various improvements
+
 Version 3.0.5 *(2022-08-24)*
 ----------------------------
 
