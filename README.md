@@ -362,7 +362,7 @@ KnHttp.get(imageUrl)
 		});
 ```
 
-## Synchronous requests
+## Synchronous requests (Do not work on the main thread)
 
 #### GET
 ```java
