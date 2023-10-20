@@ -1,7 +1,7 @@
 KnHttp Change Log
 ==========
 
-Version 3.1.1 *(2023-10-20)*
+Version 3.1.2 *(2023-10-20)*
 ----------------------------
 * Bump com.squareup.okhttp3:okhttp to 4.12.0
 * Bump com.squareup.okhttp3:okhttp-brotli to 4.12.0
@@ -11,6 +11,7 @@ Version 3.1.1 *(2023-10-20)*
 * Bump com.squareup.okio:okio to 3.6.0
 * Bump com.android.library to 8.1.2
 * Bump gradle to 8.0
+* Bump jitpack openjdk to 17
 
 Version 3.1.0 *(2023-07-06)*
 ----------------------------
