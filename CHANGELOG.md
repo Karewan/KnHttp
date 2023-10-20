@@ -1,6 +1,17 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.1 *(2023-10-20)*
+----------------------------
+* Bump com.squareup.okhttp3:okhttp to 4.12.0
+* Bump com.squareup.okhttp3:okhttp-brotli to 4.12.0
+* Bump org.jetbrains.kotlin:kotlin-bom to 1.9.10
+* Bump androidx.annotation:annotation to 1.7.0
+* Bump com.alibaba:fastjson to 1.1.76.android
+* Bump com.squareup.okio:okio to 3.6.0
+* Bump com.android.library to 8.1.2
+* Bump gradle to 8.0
+
 Version 3.1.0 *(2023-07-06)*
 ----------------------------
 * Bump compile and target Android SDK version to 33
