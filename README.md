@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:3.1.2'
+	implementation 'com.github.Karewan:KnHttp:3.1.3'
 }
 ```
 
@@ -691,7 +691,7 @@ KnHttp.get("https://jsonplaceholder.typicode.com/posts")
 
 ### License
 ```
-   Copyright (c) 2019-2023 Florent VIALATTE
+   Copyright (c) 2019-2025 Florent VIALATTE
    Copyright (c) 2016-2019 Amit Shekhar
 
    Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,6 +1,10 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.3 *(2025-07-29)*
+----------------------------
+* Bump some deps
+
 Version 3.1.2 *(2023-10-20)*
 ----------------------------
 * Bump com.squareup.okhttp3:okhttp to 4.12.0
