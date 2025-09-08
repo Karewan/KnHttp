@@ -27,13 +27,13 @@ allprojects {
 ```groovy
 android {
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_11
-		targetCompatibility JavaVersion.VERSION_11
+		sourceCompatibility JavaVersion.VERSION_21
+		targetCompatibility JavaVersion.VERSION_21
 	}
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:3.1.3'
+	implementation 'com.github.Karewan:KnHttp:3.1.4'
 }
 ```
 
@@ -557,9 +557,9 @@ KnHttp.get("https://jsonplaceholder.typicode.com/posts")
 public void onError(KnError err) {
 	if (err.getErrorCode() != 0) {
 		// received error from server
-		// err.getErrorCode() - the error code from server
-		// err.getErrorBody() - the error body from server
-		// err.getErrorDetail() - just an error detail
+			// err.getErrorCode() - the error code from server
+			// err.getErrorBody() - the error body from server
+			// err.getErrorDetail() - just an error detail
 		Log.d(TAG, "onError errorCode : " + err.getErrorCode());
 		Log.d(TAG, "onError errorBody : " + err.getErrorBody());
 		Log.d(TAG, "onError errorDetail : " + err.getErrorDetail());
@@ -567,10 +567,10 @@ public void onError(KnError err) {
 		// get parsed error object (If ApiError is your class)
 		ApiError apiError = err.getErrorAsObject(ApiError.class);
 	} else {
-		// err.getErrorDetail() :
-		// KnConstants.connectionError
-		// KnConstants.parseError
-		// KnConstants.requestCancelledError
+		// err.getErrorDetail() ==
+			// KnConstants.connectionError
+			// KnConstants.parseError
+			// KnConstants.requestCancelledError
 		Log.d(TAG, "onError errorDetail : " + err.getErrorDetail());
 	}
 }

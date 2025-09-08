@@ -1,9 +1,22 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.4 *(2025-09-08)*
+----------------------------
+* Bumped com.squareup.okhttp3:okhttp to 5.1.0
+* Bumped com.squareup.okhttp3:okhttp-brotli to 5.1.0
+* Bumped com.squareup.okio:okio to 3.16.0
+* Bumped org.jetbrains.kotlin:kotlin-bom to 2.2.10
+* Bumped com.android.library to 8.13.0
+* Bumped gradle to 8.14.3
+* Bumped target and compile SDK to 36
+* Bumped JDK to 21
+
 Version 3.1.3 *(2025-07-29)*
 ----------------------------
-* Bump some deps
+* Bumped org.conscrypt:conscrypt-android to 2.5.3
+* Bumped androidx.annotation:annotation to 1.9.1
+* Bumped org.jetbrains.kotlin:kotlin-bom to 2.2.0
 
 Version 3.1.2 *(2023-10-20)*
 ----------------------------
