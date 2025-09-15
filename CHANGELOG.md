@@ -1,6 +1,10 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.5 *(2025-09-15)*
+----------------------------
+* Added charset autodetection from HTTP Headers for the string response type
+
 Version 3.1.4 *(2025-09-08)*
 ----------------------------
 * Bumped com.squareup.okhttp3:okhttp to 5.1.0

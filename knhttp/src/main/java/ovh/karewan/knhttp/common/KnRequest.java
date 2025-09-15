@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import okhttp3.ResponseBody;
 import ovh.karewan.knhttp.core.Core;
 import ovh.karewan.knhttp.error.KnError;
 import ovh.karewan.knhttp.interfaces.BitmapRequestListener;
@@ -29,6 +30,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -516,8 +519,11 @@ public class KnRequest<T extends KnRequest> {
 				}
 			case STRING:
 				try {
+					ResponseBody body = response.body();
+					MediaType contentType = body.contentType();
+					Charset charset = contentType != null && contentType.charset() != null ? contentType.charset(StandardCharsets.UTF_8) : StandardCharsets.UTF_8;
 					//noinspection ConstantConditions
-					return KnResponse.success(Okio.buffer(response.body().source()).readUtf8());
+					return KnResponse.success(Okio.buffer(body.source()).readString(charset));
 				} catch (Exception e) {
 					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 				}
