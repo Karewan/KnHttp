@@ -1,6 +1,15 @@
 KnHttp Change Log
 ==========
 
+Version 3.1.6 *(2026-02-16)*
+----------------------------
+* Bumped com.squareup.okhttp3:okhttp to 5.3.2
+* Bumped com.squareup.okhttp3:okhttp-brotli to 5.3.2
+* Bumped com.squareup.okio:okio to 3.16.4
+* Bumped org.jetbrains.kotlin:kotlin-bom to 2.3.10
+* Bumped com.android.library to 8.13.2
+* Bumped gradle to 8.14.4
+
 Version 3.1.5 *(2025-09-15)*
 ----------------------------
 * Added charset autodetection from HTTP Headers for the string response type
