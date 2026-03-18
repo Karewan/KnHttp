@@ -72,12 +72,12 @@ public class InternalRunnable implements Runnable {
 		} catch (Exception e) {
 			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
 		} finally {
-			SourceCloseUtil.close(okHttpResponse, request);
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 
 	private void executeDownloadRequest() {
-		Response okHttpResponse;
+		Response okHttpResponse = null;
 		try {
 			okHttpResponse = InternalNetworking.gi().performDownloadRequest(request);
 
@@ -94,6 +94,8 @@ public class InternalRunnable implements Runnable {
 			request.updateDownloadCompletion(okHttpResponse);
 		} catch (Exception e) {
 			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
+		} finally {
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 
@@ -128,7 +130,7 @@ public class InternalRunnable implements Runnable {
 		} catch (Exception e) {
 			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
 		} finally {
-			SourceCloseUtil.close(okHttpResponse, request);
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 

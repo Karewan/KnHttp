@@ -56,12 +56,12 @@ public final class SynchronousCall {
 		} catch (Exception se) {
 			return new KnResponse<>(Utils.getErrorForConnection(new KnError(se)));
 		} finally {
-			SourceCloseUtil.close(okHttpResponse, request);
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 
 	private static <T> KnResponse<T> executeDownloadRequest(KnRequest request) {
-		Response okHttpResponse;
+		Response okHttpResponse = null;
 		try {
 			okHttpResponse = InternalNetworking.gi().performDownloadRequest(request);
 			if (okHttpResponse == null) return new KnResponse<>(Utils.getErrorForConnection(new KnError()));
@@ -77,6 +77,8 @@ public final class SynchronousCall {
 			return response;
 		} catch (Exception se) {
 			return new KnResponse<>(Utils.getErrorForConnection(new KnError(se)));
+		} finally {
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 
@@ -107,7 +109,7 @@ public final class SynchronousCall {
 		} catch (Exception e) {
 			return new KnResponse<>(Utils.getErrorForConnection(new KnError(e)));
 		} finally {
-			SourceCloseUtil.close(okHttpResponse, request);
+			SourceCloseUtil.close(okHttpResponse);
 		}
 	}
 }

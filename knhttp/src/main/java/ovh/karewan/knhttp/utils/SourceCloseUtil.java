@@ -11,15 +11,12 @@ public final class SourceCloseUtil {
 	private SourceCloseUtil() {
 	}
 
-	public static void close(Response response, KnRequest request) {
-		//noinspection ConstantConditions
-		if (request.getResponseAs() != ResponseType.OK_HTTP_RESPONSE && response != null && response.body() != null && response.body().source() != null) {
-			try {
-				//noinspection ConstantConditions
-				response.body().source().close();
-			} catch (Exception ignore) {
+	public static void close(Response response) {
+		if (response == null) return;
 
-			}
+		try {
+			response.body().close();
+		} catch (Exception ignore) {
 		}
 	}
 }
