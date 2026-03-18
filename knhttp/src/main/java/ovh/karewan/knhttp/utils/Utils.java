@@ -5,15 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
+import okio.BufferedSink;
+import okio.Okio;
 import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.common.KnRequest;
 import ovh.karewan.knhttp.common.KnResponse;
 import ovh.karewan.knhttp.error.KnError;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 
@@ -116,33 +115,17 @@ public final class Utils {
 		return (int) n;
 	}
 
-	public static void saveFile(Response response, String dirPath,
-								String fileName) throws IOException {
-		InputStream is = null;
-		byte[] buf = new byte[2048];
-		int len;
-		FileOutputStream fos = null;
-		try {
-			//noinspection ConstantConditions
-			is = response.body().byteStream();
-			File dir = new File(dirPath);
-			if (!dir.exists()) //noinspection ResultOfMethodCallIgnored
-				dir.mkdirs();
-			File file = new File(dir, fileName);
-			fos = new FileOutputStream(file);
-			while ((len = is.read(buf)) != -1)  fos.write(buf, 0, len);
-			fos.flush();
-		} finally {
-			try {
-				if (is != null) is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				if (fos != null) fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public static void saveFile(Response response, String dirPath, String fileName) throws Throwable {
+		File dir = new File(dirPath);
+		if (!dir.exists()) {
+			//noinspection ResultOfMethodCallIgnored
+			dir.mkdirs();
+		}
+
+		File file = new File(dir, fileName);
+
+		try(BufferedSink bufferedSink = Okio.buffer(Okio.sink(file))) {
+			bufferedSink.writeAll(response.body().source());
 		}
 	}
 

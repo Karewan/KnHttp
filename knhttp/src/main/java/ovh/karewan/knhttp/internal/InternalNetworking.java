@@ -162,16 +162,18 @@ public final class InternalNetworking {
 			request.setCall(okHttpClient.newCall(okHttpRequest));
 			okHttpResponse = request.getCall().execute();
 			Utils.saveFile(okHttpResponse, request.getDirPath(), request.getFileName());
-		} catch (IOException ioe) {
+		} catch (Throwable e) {
 			try {
 				File destinationFile = new File(request.getDirPath() + File.separator + request.getFileName());
-				if (destinationFile.exists()) //noinspection ResultOfMethodCallIgnored
+				if (destinationFile.exists()) {
+					//noinspection ResultOfMethodCallIgnored
 					destinationFile.delete();
-			} catch (Exception e) {
-				e.printStackTrace();
+				}
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 
-			throw new KnError(ioe);
+			throw new KnError(e);
 		}
 
 		return okHttpResponse;
