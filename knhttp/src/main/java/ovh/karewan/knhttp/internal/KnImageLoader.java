@@ -63,7 +63,7 @@ public final class KnImageLoader {
 	public static void shutDown() {
 		if(sInstance == null) return;
 
-		sInstance.mHandler.removeCallbacks(null);
+		sInstance.mHandler.removeCallbacksAndMessages(null);
 		if(sInstance.mCache != null) sInstance.mCache.evictAllBitmap();
 
 		synchronized (KnImageLoader.class) {
