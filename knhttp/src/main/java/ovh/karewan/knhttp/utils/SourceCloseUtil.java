@@ -1,8 +1,5 @@
 package ovh.karewan.knhttp.utils;
 
-import ovh.karewan.knhttp.common.KnRequest;
-import ovh.karewan.knhttp.common.ResponseType;
-
 import okhttp3.Response;
 
 @SuppressWarnings("rawtypes")
