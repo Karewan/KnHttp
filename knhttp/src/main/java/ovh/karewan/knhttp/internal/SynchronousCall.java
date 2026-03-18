@@ -20,16 +20,13 @@ public final class SynchronousCall {
 	private SynchronousCall() {}
 
 	public static <T> KnResponse<T> execute(KnRequest request) {
-		switch (request.getRequestType()) {
-			case SIMPLE:
-				return executeSimpleRequest(request);
-			case DOWNLOAD:
-				return executeDownloadRequest(request);
-			case MULTIPART:
-				return executeUploadRequest(request);
-		}
+		return switch (request.getRequestType()) {
+			case SIMPLE -> executeSimpleRequest(request);
+			case DOWNLOAD -> executeDownloadRequest(request);
+			case MULTIPART -> executeUploadRequest(request);
+			default -> new KnResponse<>(new KnError());
+		};
 
-		return new KnResponse<>(new KnError());
 	}
 
 	private static <T> KnResponse<T> executeSimpleRequest(KnRequest request) {
