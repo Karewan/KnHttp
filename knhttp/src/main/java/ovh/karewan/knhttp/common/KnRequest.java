@@ -24,14 +24,12 @@ import ovh.karewan.knhttp.model.MultipartFileBody;
 import ovh.karewan.knhttp.model.MultipartStringBody;
 import ovh.karewan.knhttp.utils.Utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +49,6 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.Okio;
 
 @SuppressWarnings({"unchecked", "rawtypes", "unused"})
 public class KnRequest<T extends KnRequest> {
@@ -502,67 +499,53 @@ public class KnRequest<T extends KnRequest> {
 	}
 
 	public KnResponse parseResponse(Response response) {
-		switch (mResponseType) {
-			case JSON_ARRAY:
-				try {
-					//noinspection ConstantConditions
-					return KnResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8()));
-				} catch (Exception e) {
-					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
+		try {
+			ResponseBody body = response.body();
+
+			switch (mResponseType) {
+				case STRING -> {
+					return KnResponse.success(body.string());
 				}
-			case JSON_OBJECT:
-				try {
-					//noinspection ConstantConditions
-					return KnResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8()));
-				} catch (Exception e) {
-					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
+				case JSON_ARRAY -> {
+					JSONArray array = JSON.parseArray(body.bytes());
+					return array != null ? KnResponse.success(array) : KnResponse.failed(Utils.getErrorForParse(null));
 				}
-			case STRING:
-				try {
-					ResponseBody body = response.body();
-					MediaType contentType = body.contentType();
-					Charset charset = contentType != null && contentType.charset() != null ? contentType.charset(StandardCharsets.UTF_8) : StandardCharsets.UTF_8;
-					//noinspection ConstantConditions
-					return KnResponse.success(Okio.buffer(body.source()).readString(charset));
-				} catch (Exception e) {
-					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
+				case JSON_OBJECT -> {
+					JSONObject object = JSON.parseObject(body.bytes());
+					return object != null ? KnResponse.success(object) : KnResponse.failed(Utils.getErrorForParse(null));
 				}
-			case BITMAP:
-				synchronized (sDecodeLock) {
-					try {
-						return Utils.decodeBitmap(response, mMaxWidth, mMaxHeight, mDecodeConfig, mBitmapOptions, mScaleType);
-					} catch (Exception e) {
-						return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
+				case OBJECT -> {
+					Object object = JSON.parseObject(body.bytes(), mItemClass);
+					return object != null ? KnResponse.success(object) : KnResponse.failed(Utils.getErrorForParse(null));
+				}
+				case OBJECT_LIST -> {
+					List list = JSON.parseArray(body.bytes(), mItemClass);
+					return list != null ? KnResponse.success(list) : KnResponse.failed(Utils.getErrorForParse(null));
+				}
+				case BITMAP -> {
+					synchronized (sDecodeLock) {
+						Bitmap bitmap = Utils.decodeBitmap(body.bytes(), mMaxWidth, mMaxHeight, mDecodeConfig, mBitmapOptions, mScaleType);
+						return bitmap != null ? KnResponse.success(bitmap) : KnResponse.failed(Utils.getErrorForParse(null));
 					}
 				}
-			case OBJECT:
-				try {
-					//noinspection ConstantConditions
-					return KnResponse.success(JSON.parseObject(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
-				} catch (Exception e) {
-					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
+				default -> {
+					return KnResponse.failed(Utils.getErrorForParse(null));
 				}
-			case OBJECT_LIST:
-				try {
-					//noinspection ConstantConditions
-					return KnResponse.success(JSON.parseArray(Okio.buffer(response.body().source()).readUtf8(), mItemClass));
-				} catch (Exception e) {
-					return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
-				}
+			}
+		} catch (Throwable e) {
+			return KnResponse.failed(Utils.getErrorForParse(new KnError(e)));
 		}
-		return null;
 	}
 
 	public KnError parseNetworkError(KnError knError) {
+		if(knError.getResponse() == null) return knError;
+
 		try {
-			//noinspection ConstantConditions
-			if (knError.getResponse() != null && knError.getResponse().body() != null && knError.getResponse().body().source() != null) {
-				//noinspection ConstantConditions
-				knError.setErrorBody(Okio.buffer(knError.getResponse().body().source()).readUtf8());
-			}
+			knError.setErrorBody(knError.getResponse().body().string());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return knError;
 	}
 

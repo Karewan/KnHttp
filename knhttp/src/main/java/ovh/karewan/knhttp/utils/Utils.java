@@ -9,7 +9,6 @@ import okio.BufferedSink;
 import okio.Okio;
 import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.common.KnRequest;
-import ovh.karewan.knhttp.common.KnResponse;
 import ovh.karewan.knhttp.error.KnError;
 
 import java.io.File;
@@ -18,7 +17,6 @@ import java.net.URLConnection;
 
 import okhttp3.Cache;
 import okhttp3.Response;
-import okio.Okio;
 
 @SuppressWarnings("rawtypes")
 public final class Utils {
@@ -37,17 +35,9 @@ public final class Utils {
 		return contentTypeFor;
 	}
 
-	public static KnResponse<Bitmap> decodeBitmap(Response response, int maxWidth, int maxHeight, Bitmap.Config decodeConfig, BitmapFactory.Options decodeOptions, ImageView.ScaleType scaleType) {
-		byte[] data = new byte[0];
-
-		try {
-			//noinspection ConstantConditions
-			data = Okio.buffer(response.body().source()).readByteArray();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+	public static Bitmap decodeBitmap(byte[] data, int maxWidth, int maxHeight, Bitmap.Config decodeConfig, BitmapFactory.Options decodeOptions, ImageView.ScaleType scaleType) {
 		Bitmap bitmap;
+
 		if (maxWidth == 0 && maxHeight == 0) {
 			decodeOptions.inPreferredConfig = decodeConfig;
 			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, decodeOptions);
@@ -72,8 +62,7 @@ public final class Utils {
 			}
 		}
 
-		if (bitmap == null) return KnResponse.failed(Utils.getErrorForParse(new KnError(response)));
-		else return KnResponse.success(bitmap);
+		return bitmap;
 	}
 
 	private static int getResizedDimension(int maxPrimary, int maxSecondary, int actualPrimary, int actualSecondary, ImageView.ScaleType scaleType) {
