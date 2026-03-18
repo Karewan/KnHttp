@@ -228,7 +228,7 @@ public final class KnImageLoader {
 				request = mBatchedResponses.get(mCacheKey);
 				if (request != null) {
 					request.removeContainerAndCancelIfNecessary(this);
-					if (request.mContainers.size() == 0) mBatchedResponses.remove(mCacheKey);
+					if (request.mContainers.isEmpty()) mBatchedResponses.remove(mCacheKey);
 				}
 			}
 		}
@@ -272,7 +272,7 @@ public final class KnImageLoader {
 
 		public boolean removeContainerAndCancelIfNecessary(ImageContainer container) {
 			mContainers.remove(container);
-			if (mContainers.size() == 0) {
+			if (mContainers.isEmpty()) {
 				mRequest.cancel(true);
 				if (mRequest.isCanceled()) {
 					mRequest.destroy();
