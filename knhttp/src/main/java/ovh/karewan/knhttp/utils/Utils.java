@@ -161,6 +161,9 @@ public final class Utils {
 	}
 
 	public static KnError getErrorForParse(KnError error) {
+		if(error == null) {
+			error = new KnError("Failed to parse the body");
+		}
 		error.setErrorCode(0);
 		error.setErrorDetail(KnConstants.PARSE_ERROR);
 		return error;
