@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import okhttp3.Response;
 import ovh.karewan.knhttp.KnHttp;
 import ovh.karewan.knhttp.cache.LruBitmapCache;
@@ -158,12 +160,12 @@ public final class KnImageLoader {
 
 		KnRequest.getAsBitmap(new BitmapRequestListener() {
 			@Override
-			public void onResponse(Bitmap response, Response okHttpResponse) {
+			public void onResponse(@NonNull Bitmap response, @NonNull Response okHttpResponse) {
 				onGetImageSuccess(cacheKey, response);
 			}
 
 			@Override
-			public void onError(KnError knError) {
+			public void onError(@NonNull KnError knError) {
 				onGetImageError(cacheKey, knError);
 			}
 		});
