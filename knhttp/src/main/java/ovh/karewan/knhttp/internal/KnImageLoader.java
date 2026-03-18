@@ -148,7 +148,7 @@ public final class KnImageLoader {
 		return imageContainer;
 	}
 
-	protected KnRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, final String cacheKey) {
+	private KnRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, final String cacheKey) {
 		KnRequest KnRequest = KnHttp.get(requestUrl)
 				.setTag("ImageRequestTag")
 				.setBitmapMaxHeight(maxHeight)
@@ -181,7 +181,7 @@ public final class KnImageLoader {
 		mBatchResponseDelayMs = newBatchedResponseDelayMs;
 	}
 
-	protected void onGetImageSuccess(String cacheKey, Bitmap response) {
+	private void onGetImageSuccess(String cacheKey, Bitmap response) {
 		mCache.putBitmap(cacheKey, response);
 		BatchedImageRequest request = mInFlightRequests.remove(cacheKey);
 
@@ -191,7 +191,7 @@ public final class KnImageLoader {
 		}
 	}
 
-	protected void onGetImageError(String cacheKey, KnError knError) {
+	private void onGetImageError(String cacheKey, KnError knError) {
 		BatchedImageRequest request = mInFlightRequests.remove(cacheKey);
 
 		if (request != null) {
