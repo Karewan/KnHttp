@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import org.conscrypt.Conscrypt;
 
 import okhttp3.brotli.BrotliInterceptor;
+import ovh.karewan.knhttp.BuildConfig;
 import ovh.karewan.knhttp.common.KnConstants;
 import ovh.karewan.knhttp.common.KnRequest;
 import ovh.karewan.knhttp.common.KnSettings;
@@ -47,7 +48,7 @@ public final class InternalNetworking {
 	private static volatile InternalNetworking sInstance;
 	private KnSettings mSettings = null;
 	private OkHttpClient mHttpClient;
-	private String mUserAgent = "KnHttp/3";
+	private String mUserAgent = "KnHttp/" + BuildConfig.VERSION_NAME;
 
 	private InternalNetworking() {}
 
