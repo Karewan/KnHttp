@@ -1,12 +1,13 @@
 KnHttp Change Log
 ==========
 
-Version 4.0.0 *(TBD)*
+Version 4.0.0 *(2026-03-19)*
 ----------------------------
 * Various fixes and improvements
 * Bumped org.jetbrains.kotlin:kotlin-bom to 2.3.20
 * **BREAKING CHANGES**
-  * Replaced com.alibaba:fastjson by com.alibaba.fastjson2:fastjson2
+  * Replaced fastjson by fastjson2 for better security and performance
+     * If you use fastjson in your code, you only need to replace your imports of com.alibaba:fastjson.* with com.alibaba.fastjson2:fastjson2.*
 
 Version 3.1.6 *(2026-02-16)*
 ----------------------------
