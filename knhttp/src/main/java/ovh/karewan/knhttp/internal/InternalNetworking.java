@@ -248,7 +248,9 @@ public final class InternalNetworking {
 		Security.insertProviderAt(conscrypt, 1);
 
 		// If no settings, use default settings
-		if(mSettings == null) mSettings = new KnSettings.Builder().build();
+		if(mSettings == null) {
+			mSettings = new KnSettings.Builder().build();
+		}
 
 		// OkHttpClient Builder
 		OkHttpClient.Builder okHttpBuilder = new OkHttpClient().newBuilder()
@@ -257,21 +259,35 @@ public final class InternalNetworking {
 				.readTimeout(mSettings.getReadTimeout(), TimeUnit.MILLISECONDS)
 				.writeTimeout(mSettings.getWriteTimeout(), TimeUnit.MILLISECONDS)
 				.followRedirects(mSettings.isFollowRedirect())
-				.connectionSpecs(Collections.singletonList(mSettings.isAllowObsoleteTls() ? ConnectionSpec.COMPATIBLE_TLS : ConnectionSpec.RESTRICTED_TLS));
+				.connectionSpecs(Collections.singletonList(mSettings.isObsoleteTlsAllowed() ? ConnectionSpec.COMPATIBLE_TLS : ConnectionSpec.RESTRICTED_TLS));
 
 		// Cache
-		if(!mSettings.isCacheEnabled() || context == null) okHttpBuilder.cache(null);
-		else okHttpBuilder.cache(Utils.getCache(context.getApplicationContext(), KnConstants.MAX_CACHE_SIZE, KnConstants.CACHE_DIR_NAME));
+		if(!mSettings.isCacheEnabled() || context == null) {
+			okHttpBuilder.cache(null);
+		} else {
+			okHttpBuilder.cache(Utils.getCache(context.getApplicationContext(), KnConstants.MAX_CACHE_SIZE, KnConstants.CACHE_DIR_NAME));
+		}
 
 		// Brotli
-		if(mSettings.isBrotliEnabled()) okHttpBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
+		if(mSettings.isBrotliEnabled()) {
+			okHttpBuilder.addInterceptor(BrotliInterceptor.INSTANCE);
+		}
 
 		try {
+			X509TrustManager tm;
+			if(mSettings.isInvalidCertificatesAllowed()) {
+				// Allow bad TLS certificates
+				tm = new InternalUnsafeX509();
+				okHttpBuilder.setHostnameVerifier$okhttp((hostname, session) -> true);
+			} else {
+				// Validates certificates
+				tm = Conscrypt.getDefaultX509TrustManager();
+			}
+
 			// Custom SSL socket factory to add TLS 1.3 support on all devices
-			X509TrustManager tm = Conscrypt.getDefaultX509TrustManager();
 			SSLContext sslContext = SSLContext.getInstance("TLS", conscrypt);
 			sslContext.init(null, new TrustManager[] { tm }, null);
-			okHttpBuilder.sslSocketFactory(new InternalSSLSocketFactory(sslContext.getSocketFactory(), mSettings.isAllowObsoleteTls()), tm);
+			okHttpBuilder.sslSocketFactory(new InternalSSLSocketFactory(sslContext.getSocketFactory(), mSettings.isObsoleteTlsAllowed()), tm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

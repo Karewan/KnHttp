@@ -11,7 +11,7 @@ android {
 		minSdk 21
 		targetSdk 36
 		consumerProguardFiles 'proguard-rules.pro'
-		buildConfigField("String", "VERSION_NAME", "\"4.0.0\"")
+		buildConfigField("String", "VERSION_NAME", "\"4.0.1\"")
 	}
 
 	buildFeatures {

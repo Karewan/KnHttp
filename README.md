@@ -9,6 +9,7 @@
 * Brotli + Gzip support
 * It uses [OkHttp](http://square.github.io/okhttp/), more importantly it supports HTTP/2.
 * As it uses [Okio](https://github.com/square/okio), no more GC overhead in android applications. [Okio](https://github.com/square/okio) is made to handle GC overhead while allocating memory. [Okio](https://github.com/square/okio) does some clever things to save CPU and memory.
+* Ultra fast JSON mapping and parsing with the help of [FASTJSON2](https://github.com/alibaba/fastjson2).
 * No other single library does each and everything like making request, downloading any type of file, uploading file, etc. There are some libraries but they are outdated.
 * No other library provides simple interface for doing all types of things in networking like setting priority, cancelling, etc.
 * Recent removal of HttpClient in Android Marshmallow(Android M) made other networking libraries obsolete.
@@ -33,7 +34,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:4.0.0'
+	implementation 'com.github.Karewan:KnHttp:4.0.1'
 }
 ```
 
@@ -52,10 +53,11 @@ KnHttp.init(getApplicationContext());
 ```java
 KnSettings settings = new KnSettings.Builder()
 		.setCallTimeout(0) // Call timeout ms (Default: 0)
-		.setConnectTimeout(15000) // Connect timeout ms (Default: 15s)
-		.setReadTimeout(30000) // Read timeout ms (Default: 30s)
-		.setWriteTimeout(30000) // Write timeout ms (Default: 30s)
+		.setConnectTimeout(15_000) // Connect timeout ms (Default: 15s)
+		.setReadTimeout(30_000) // Read timeout ms (Default: 30s)
+		.setWriteTimeout(30_000) // Write timeout ms (Default: 30s)
 		.setAllowObsoleteTls(false) // Obsolete TLS 1.0 and 1.1 (Default: false)
+		.setAllowInvalidTlsCertificates(false) // Invalid TLS Certificates (Default: false)
 		.setEnableCache(false) // Request caching (Default: false)
 		.setEnableBrotli(true) // Brotli (+ Gzip) (Default: true), if false gzip stay enabled (OkHttp default behavior)
 		.setFollowRedirect(false) // Follow redirect (Default: false)

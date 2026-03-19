@@ -8,16 +8,28 @@ public final class KnSettings {
 	private final long mWriteTimeout;
 	private final long mCallTimeout;
 	private final boolean mAllowObsoleteTls;
+	private final boolean mAllowInvalidTlsCertificates;
 	private final boolean mEnableCache;
 	private final boolean mEnableBrotli;
 	private final boolean mFollowRedirect;
 
-	private KnSettings(long connectTimeout, long readTimeout, long writeTimeout, long callTimeout, boolean allowObsoleteTls, boolean enableCache, boolean enableBrotli, boolean followRedirect) {
+	private KnSettings(
+			long connectTimeout,
+			long readTimeout,
+			long writeTimeout,
+			long callTimeout,
+			boolean allowObsoleteTls,
+			boolean allowInvalidTlsCertificates,
+			boolean enableCache,
+			boolean enableBrotli,
+			boolean followRedirect
+	) {
 		this.mConnectTimeout = connectTimeout;
 		this.mReadTimeout = readTimeout;
 		this.mWriteTimeout = writeTimeout;
 		this.mCallTimeout = callTimeout;
 		this.mAllowObsoleteTls = allowObsoleteTls;
+		this.mAllowInvalidTlsCertificates = allowInvalidTlsCertificates;
 		this.mEnableCache = enableCache;
 		this.mEnableBrotli = enableBrotli;
 		this.mFollowRedirect = followRedirect;
@@ -39,8 +51,12 @@ public final class KnSettings {
 		return mCallTimeout;
 	}
 
-	public boolean isAllowObsoleteTls() {
+	public boolean isObsoleteTlsAllowed() {
 		return mAllowObsoleteTls;
+	}
+
+	public boolean isInvalidCertificatesAllowed() {
+		return mAllowInvalidTlsCertificates;
 	}
 
 	public boolean isCacheEnabled() {
@@ -62,6 +78,7 @@ public final class KnSettings {
 		private long mWriteTimeout = 30000; // 30 seconds
 		private long mCallTimeout = 0; // Inf
 		private boolean mAllowObsoleteTls = false; // TLS 1.3 and 1.2 Only
+		private boolean mAllowInvalidTlsCertificates = false; // Allow bad TLS Certificates
 		private boolean mEnableCache = false; // Cache disabled
 		private boolean mEnableBrotli = true; // Brotli enabled
 		private boolean mFollowRedirect = false; // Follow redirect disabled
@@ -91,6 +108,11 @@ public final class KnSettings {
 			return this;
 		}
 
+		public Builder setAllowInvalidTlsCertificates(boolean allow) {
+			this.mAllowInvalidTlsCertificates = allow;
+			return this;
+		}
+
 		public Builder setEnableCache(boolean enable) {
 			this.mEnableCache = enable;
 			return this;
@@ -107,7 +129,17 @@ public final class KnSettings {
 		}
 		@NonNull
 		public KnSettings build() {
-			return new KnSettings(mConnectTimeout, mReadTimeout, mWriteTimeout, mCallTimeout, mAllowObsoleteTls, mEnableCache, mEnableBrotli, mFollowRedirect);
+			return new KnSettings(
+					mConnectTimeout,
+					mReadTimeout,
+					mWriteTimeout,
+					mCallTimeout,
+					mAllowObsoleteTls,
+					mAllowInvalidTlsCertificates,
+					mEnableCache,
+					mEnableBrotli,
+					mFollowRedirect
+			);
 		}
 	}
 }

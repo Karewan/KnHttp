@@ -1,6 +1,10 @@
 KnHttp Change Log
 ==========
 
+Version 4.0.1 *(2026-03-19)*
+----------------------------
+* Added an option to accept invalid TLS certificates
+
 Version 4.0.0 *(2026-03-19)*
 ----------------------------
 * Various fixes and improvements
