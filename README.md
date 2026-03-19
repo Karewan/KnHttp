@@ -563,9 +563,6 @@ public void onError(KnError err) {
 		Log.d(TAG, "onError errorCode : " + err.getErrorCode());
 		Log.d(TAG, "onError errorBody : " + err.getErrorBody());
 		Log.d(TAG, "onError errorDetail : " + err.getErrorDetail());
-
-		// get parsed error object (If ApiError is your class)
-		ApiError apiError = err.getErrorAsObject(ApiError.class);
 	} else {
 		// err.getErrorDetail() ==
 			// KnConstants.connectionError
@@ -691,7 +688,7 @@ KnHttp.get("https://jsonplaceholder.typicode.com/posts")
 
 ### License
 ```
-   Copyright (c) 2019-2025 Florent VIALATTE
+   Copyright (c) 2019-2026 Florent VIALATTE
    Copyright (c) 2016-2019 Amit Shekhar
 
    Licensed under the Apache License, Version 2.0 (the "License");
