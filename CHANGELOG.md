@@ -11,7 +11,7 @@ Version 4.0.0 *(2026-03-19)*
 * Bumped org.jetbrains.kotlin:kotlin-bom to 2.3.20
 * **BREAKING CHANGES**
   * Replaced fastjson by fastjson2 for better security and performance
-     * If you use fastjson in your code, you only need to replace your imports of com.alibaba:fastjson.* with com.alibaba.fastjson2:fastjson2.*
+     * If you use fastjson in your code, you only need to replace your imports of com.alibaba.fastjson.* with com.alibaba.fastjson2.*
 
 Version 3.1.6 *(2026-02-16)*
 ----------------------------
