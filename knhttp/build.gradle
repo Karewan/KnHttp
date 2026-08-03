@@ -5,13 +5,13 @@ plugins {
 
 android {
 	namespace 'ovh.karewan.knhttp'
-	compileSdk = 36
+	compileSdk = 37
 
 	defaultConfig {
 		minSdk 21
-		targetSdk 36
+		targetSdk 37
 		consumerProguardFiles 'proguard-rules.pro'
-		buildConfigField("String", "VERSION_NAME", "\"4.0.1\"")
+		buildConfigField("String", "VERSION_NAME", "\"4.0.2\"")
 	}
 
 	buildFeatures {
@@ -40,15 +40,15 @@ android {
 }
 
 dependencies {
-	implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.3.20"))
-	implementation 'androidx.annotation:annotation:1.9.1'
-	implementation 'org.conscrypt:conscrypt-android:2.5.3'
-	api 'com.squareup.okio:okio:3.16.4'
-	api ('com.squareup.okhttp3:okhttp:5.3.2') {
+	implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.3.21"))
+	implementation 'androidx.annotation:annotation:1.10.0'
+	implementation 'org.conscrypt:conscrypt-android:2.6.1'
+	api 'com.squareup.okio:okio:3.18.1'
+	api ('com.squareup.okhttp3:okhttp:5.4.0') {
 		exclude group: 'com.squareup.okio', module:'okio'
 		exclude group: 'com.squareup.okio', module:'okio-jvm'
 	}
-	implementation 'com.squareup.okhttp3:okhttp-brotli:5.3.2'
+	implementation 'com.squareup.okhttp3:okhttp-brotli:5.4.0'
 	api 'com.alibaba.fastjson2:fastjson2:2.0.61.android5'
 }
 

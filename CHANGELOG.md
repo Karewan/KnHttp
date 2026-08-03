@@ -1,6 +1,22 @@
 KnHttp Change Log
 ==========
 
+Version 4.0.2 *(2026-08-03)*
+----------------------------
+### Build & Environment
+
+* **SDK Bump:** Upgraded `compileSdk` and `targetSdk` to 37.
+* **Gradle Update:** Upgraded Gradle wrapper from 8.14.4 to 9.6.1 and added `distributionSha256Sum` for binary verification.
+* **AGP Update:** Upgraded Android Gradle Plugin (`com.android.library`) from 8.13.2 to 9.3.1.
+
+### Dependencies
+
+* **Kotlin BOM:** Upgraded from `2.3.20` to `2.3.21`
+* **OkHttp:** Upgraded from `5.3.2` to `5.4.0` (includes `okhttp` and `okhttp-brotli`)
+* **Okio:** Upgraded from `3.16.4` to `3.18.1`
+* **Conscrypt Android:** Upgraded from `2.5.3` to `2.6.1`
+* **AndroidX Annotation:** Upgraded from `1.9.1` to `1.10.0`
+
 Version 4.0.1 *(2026-03-19)*
 ----------------------------
 * Added an option to accept invalid TLS certificates
