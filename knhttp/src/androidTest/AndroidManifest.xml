@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<!-- No usesCleartextTraffic: the default network security policy (targetSdk 28+) blocks plain HTTP, DeviceNetworkTest checks it -->
+
+</manifest>

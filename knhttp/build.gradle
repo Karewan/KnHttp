@@ -1,17 +1,22 @@
 plugins {
-	id 'com.android.library'
+	alias(libs.plugins.android.library)
 	id 'maven-publish'
 }
 
+// Single source of truth for the library version (BuildConfig, default User-Agent and publication)
+def knHttpVersion = '5.0.0'
+// JitPack publishes the requested tag, commit or branch: it passes it with -Pversion
+def publicationVersion = project.version.toString() in ['', 'unspecified'] ? knHttpVersion : project.version.toString()
+
 android {
-	namespace 'ovh.karewan.knhttp'
+	namespace = 'ovh.karewan.knhttp'
 	compileSdk = 37
 
 	defaultConfig {
-		minSdk 21
-		targetSdk 37
+		minSdk = 21
+		testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 		consumerProguardFiles 'proguard-rules.pro'
-		buildConfigField("String", "VERSION_NAME", "\"4.0.2\"")
+		buildConfigField 'String', 'VERSION_NAME', "\"${knHttpVersion}\""
 	}
 
 	buildFeatures {
@@ -20,36 +25,68 @@ android {
 
 	buildTypes {
 		release {
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			minifyEnabled = false
 		}
 	}
 
-	lintOptions {
-		abortOnError false
+	lint {
+		abortOnError = false
+		targetSdk = 37
+	}
+
+	testOptions {
+		targetSdk = 37
+		unitTests {
+			includeAndroidResources = true
+			all {
+				maxHeapSize = '2g'
+				// Robolectric (SDK 36) on recent JDKs
+				jvmArgs '--add-opens=java.base/jdk.internal.access=ALL-UNNAMED', '--add-exports=java.base/jdk.internal.access=ALL-UNNAMED', '--enable-native-access=ALL-UNNAMED'
+			}
+		}
 	}
 
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_21
-		targetCompatibility JavaVersion.VERSION_21
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
 	}
 
 	publishing {
-		singleVariant("release")
+		singleVariant('release') {
+			withSourcesJar()
+		}
 	}
 }
 
 dependencies {
-	implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.3.21"))
-	implementation 'androidx.annotation:annotation:1.10.0'
-	implementation 'org.conscrypt:conscrypt-android:2.6.1'
-	api 'com.squareup.okio:okio:3.18.1'
-	api ('com.squareup.okhttp3:okhttp:5.4.0') {
-		exclude group: 'com.squareup.okio', module:'okio'
-		exclude group: 'com.squareup.okio', module:'okio-jvm'
+	implementation(platform(libs.kotlin.bom))
+	// Annotations used by the public API (@NonNull, @RestrictTo...)
+	api(libs.androidx.annotation)
+	implementation(libs.conscrypt.android)
+	api(libs.okio)
+	api(libs.okhttp)
+	implementation(libs.okhttp.brotli)
+	api(libs.fastjson2)
+
+	testImplementation(libs.junit)
+	testImplementation(libs.robolectric)
+	testImplementation(libs.androidx.test.core)
+	testImplementation(libs.androidx.test.ext.junit)
+	testImplementation(libs.okhttp.mockwebserver)
+	testImplementation(libs.okhttp.tls)
+	// JVM build of Conscrypt (same version) for the unit tests, the Android one can't load on the JVM
+	testImplementation(libs.conscrypt.openjdk.uber)
+
+	// Real devices: ./gradlew :knhttp:connectedDebugAndroidTest
+	androidTestImplementation(libs.junit)
+	androidTestImplementation(libs.androidx.test.runner)
+	androidTestImplementation(libs.androidx.test.ext.junit)
+}
+
+configurations.configureEach {
+	if (name.endsWith('UnitTestRuntimeClasspath') || name.endsWith('UnitTestCompileClasspath')) {
+		exclude group: 'org.conscrypt', module: 'conscrypt-android'
 	}
-	implementation 'com.squareup.okhttp3:okhttp-brotli:5.4.0'
-	api 'com.alibaba.fastjson2:fastjson2:2.0.61.android5'
 }
 
 afterEvaluate {
@@ -59,8 +96,12 @@ afterEvaluate {
 				from components.release
 				groupId = 'com.github.Karewan'
 				artifactId = 'KnHttp'
-				version = android.defaultConfig.versionName
+				version = publicationVersion
 			}
 		}
 	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
 }

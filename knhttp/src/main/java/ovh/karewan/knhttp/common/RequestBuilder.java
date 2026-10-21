@@ -8,37 +8,26 @@ import okhttp3.OkHttpClient;
 
 @SuppressWarnings("unused")
 public interface RequestBuilder {
-
 	RequestBuilder setPriority(Priority priority);
-
 	RequestBuilder setTag(Object tag);
-
 	RequestBuilder addHeaders(String key, String value);
-
 	RequestBuilder addHeaders(Map<String, String> headerMap);
-
 	RequestBuilder addQueryParameter(String key, String value);
-
 	RequestBuilder addQueryParameter(Map<String, String> queryParameterMap);
-
 	RequestBuilder addPathParameter(String key, String value);
-
 	RequestBuilder addPathParameter(Map<String, String> pathParameterMap);
-
+	RequestBuilder addEncodedPathParameter(String key, String value);
 	RequestBuilder doNotCacheResponse();
-
 	RequestBuilder getResponseOnlyIfCached();
-
 	RequestBuilder getResponseOnlyFromNetwork();
-
 	RequestBuilder setMaxAgeCacheControl(int maxAge, TimeUnit timeUnit);
-
 	RequestBuilder setMaxStaleCacheControl(int maxStale, TimeUnit timeUnit);
-
 	RequestBuilder setExecutor(Executor executor);
-
 	RequestBuilder setOkHttpClient(OkHttpClient okHttpClient);
-
 	RequestBuilder setUserAgent(String userAgent);
-
+	RequestBuilder setConnectTimeout(long timeout, TimeUnit timeUnit);
+	RequestBuilder setReadTimeout(long timeout, TimeUnit timeUnit);
+	RequestBuilder setWriteTimeout(long timeout, TimeUnit timeUnit);
+	RequestBuilder setCallTimeout(long timeout, TimeUnit timeUnit);
+	KnRequest build();
 }

@@ -1,6 +1,7 @@
 package ovh.karewan.knhttp.cache;
 
 import android.graphics.Bitmap;
+import android.util.LruCache;
 
 import ovh.karewan.knhttp.internal.KnImageLoader;
 
@@ -8,13 +9,16 @@ import ovh.karewan.knhttp.internal.KnImageLoader;
 public final class LruBitmapCache extends LruCache<String, Bitmap>
 		implements KnImageLoader.ImageCache {
 
+	/**
+	 * @param maxSize The max size of the cache in bytes
+	 */
 	public LruBitmapCache(int maxSize) {
 		super(maxSize);
 	}
 
 	@Override
 	protected int sizeOf(String key, Bitmap value) {
-		return value.getRowBytes() * value.getHeight();
+		return value.getAllocationByteCount();
 	}
 
 	@Override

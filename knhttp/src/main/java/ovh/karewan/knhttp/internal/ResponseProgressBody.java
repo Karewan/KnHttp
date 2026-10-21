@@ -1,10 +1,7 @@
 package ovh.karewan.knhttp.internal;
 
 import androidx.annotation.NonNull;
-
-import ovh.karewan.knhttp.common.KnConstants;
-import ovh.karewan.knhttp.interfaces.DownloadProgressListener;
-import ovh.karewan.knhttp.model.Progress;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 
@@ -19,14 +16,15 @@ import okio.Source;
 public final class ResponseProgressBody extends ResponseBody {
 
 	private final ResponseBody mResponseBody;
-	private BufferedSource bufferedSource;
-	private DownloadProgressHandler downloadProgressHandler;
+	private final ProgressReporter mReporter;
+	private BufferedSource mBufferedSource;
 
-	public ResponseProgressBody(ResponseBody responseBody, DownloadProgressListener downloadProgressListener) {
+	public ResponseProgressBody(@NonNull ResponseBody responseBody, @NonNull ProgressReporter reporter) {
 		this.mResponseBody = responseBody;
-		if (downloadProgressListener != null) this.downloadProgressHandler = new DownloadProgressHandler(downloadProgressListener);
+		this.mReporter = reporter;
 	}
 
+	@Nullable
 	@Override
 	public MediaType contentType() {
 		return mResponseBody.contentType();
@@ -40,19 +38,29 @@ public final class ResponseProgressBody extends ResponseBody {
 	@Override
 	@NonNull
 	public BufferedSource source() {
-		if (bufferedSource == null) bufferedSource = Okio.buffer(source(mResponseBody.source()));
-		return bufferedSource;
+		if (mBufferedSource == null) mBufferedSource = Okio.buffer(source(mResponseBody.source()));
+		return mBufferedSource;
 	}
 
 	private Source source(Source source) {
+		final long contentLength = mResponseBody.contentLength();
+
 		return new ForwardingSource(source) {
-			long totalBytesRead;
+			private long mTotalBytesRead = 0L;
+			private boolean mDone = false;
 
 			@Override
 			public long read(@NonNull Buffer sink, long byteCount) throws IOException {
-				long bytesRead = super.read(sink, byteCount);
-				totalBytesRead += ((bytesRead != -1) ? bytesRead : 0);
-				if (downloadProgressHandler != null) downloadProgressHandler.obtainMessage(KnConstants.UPDATE, new Progress(totalBytesRead, mResponseBody.contentLength())).sendToTarget();
+				final long bytesRead = super.read(sink, byteCount);
+
+				if (bytesRead != -1) {
+					mTotalBytesRead += bytesRead;
+					mReporter.onProgress(mTotalBytesRead, contentLength, false);
+				} else if (!mDone) {
+					mDone = true;
+					mReporter.onProgress(mTotalBytesRead, contentLength, true);
+				}
+
 				return bytesRead;
 			}
 		};

@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 }
 
 include ':knhttp'
+include ':benchmark'
+include ':sample'
 rootProject.name='KnHttp'

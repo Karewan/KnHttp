@@ -1,5 +1,8 @@
 package ovh.karewan.knhttp.internal;
 
+import android.content.ComponentCallbacks2;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -7,6 +10,7 @@ import android.os.Looper;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import okhttp3.Response;
 import ovh.karewan.knhttp.KnHttp;
@@ -18,21 +22,20 @@ import ovh.karewan.knhttp.interfaces.BitmapRequestListener;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-@SuppressWarnings({"unused", "rawtypes"})
+@SuppressWarnings("unused")
 public final class KnImageLoader {
 	private static volatile KnImageLoader sInstance;
 
-	// Get max available VM memory, exceeding this amount will throw an
-	// OutOfMemory exception. Stored in kilobytes as LruCache takes an
-	// int in its constructor.
-	private static final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+	// Max size of the memory cache: 1/8th of the available VM memory by default (in bytes, like LruBitmapCache.sizeOf()).
+	// It is a limit, the cache only holds the loaded images.
+	private static volatile int sMaxCacheSize = (int) Math.min(Integer.MAX_VALUE, Runtime.getRuntime().maxMemory() / 8);
+	private static Context sMemoryCallbacksContext = null; // Guarded by KnImageLoader.class
 
-	// Use 1/8th of the available memory for this memory cache.
-	private static final int cacheSize = maxMemory / 8;
+	// 0: the responses received during the same main loop iteration are still batched, without added latency
+	private int mBatchResponseDelayMs = 0;
 
-	private int mBatchResponseDelayMs = 100;
-
-	private final ImageCache mCache;
+	// Created on first use only
+	private volatile ImageCache mCache;
 
 	private final HashMap<String, BatchedImageRequest> mInFlightRequests =
 			new HashMap<>();
@@ -44,31 +47,99 @@ public final class KnImageLoader {
 
 	private Runnable mRunnable;
 
-	private BitmapFactory.Options mBitmapOptions = new BitmapFactory.Options();
+	// Static: setting them must not create the loader
+	private static volatile BitmapFactory.Options sBitmapOptions = null;
 
-	private KnImageLoader(ImageCache imageCache) {
-		mCache = imageCache;
-	}
+	private KnImageLoader() {}
 
 	public static KnImageLoader gi() {
 		if (sInstance == null) {
 			synchronized (KnImageLoader.class) {
-				if (sInstance == null)  sInstance = new KnImageLoader(new LruBitmapCache(cacheSize));
+				if (sInstance == null)  sInstance = new KnImageLoader();
 			}
 		}
 
 		return sInstance;
 	}
 
-	public static void shutDown() {
-		if(sInstance == null) return;
+	/**
+	 * @return The instance, without creating it
+	 */
+	@Nullable
+	public static KnImageLoader peek() {
+		return sInstance;
+	}
 
-		sInstance.mHandler.removeCallbacksAndMessages(null);
-		if(sInstance.mCache != null) sInstance.mCache.evictAllBitmap();
+	/**
+	 * @return The memory cache, without creating it
+	 */
+	@Nullable
+	public static ImageCache peekImageCache() {
+		final KnImageLoader instance = sInstance;
+		return instance != null ? instance.mCache : null;
+	}
+
+	public static void setMaxCacheSize(int maxSizeBytes) {
+		if (maxSizeBytes <= 0) throw new IllegalArgumentException("maxSizeBytes <= 0");
+
+		sMaxCacheSize = maxSizeBytes;
+		final ImageCache cache = peekImageCache();
+		if (cache instanceof LruBitmapCache) ((LruBitmapCache) cache).resize(maxSizeBytes);
+	}
+
+	/**
+	 * Releases the cached images when the system needs memory
+	 */
+	public static void registerMemoryCallbacks(@NonNull Context context) {
+		final Context appContext = context.getApplicationContext();
+
+		// Once per application (the application context lives as long as the process)
+		synchronized (KnImageLoader.class) {
+			if (sMemoryCallbacksContext == appContext) return;
+			sMemoryCallbacksContext = appContext;
+		}
+
+		appContext.registerComponentCallbacks(new ComponentCallbacks2() {
+			@Override
+			public void onTrimMemory(int level) {
+				trimMemory(level);
+			}
+
+			@Override
+			public void onConfigurationChanged(@NonNull Configuration newConfig) {
+			}
+
+			@Override
+			@SuppressWarnings("deprecation")
+			public void onLowMemory() {
+				trimMemory(ComponentCallbacks2.TRIM_MEMORY_BACKGROUND);
+			}
+		});
+	}
+
+	static void trimMemory(int level) {
+		final ImageCache cache = peekImageCache();
+		if (cache == null) return;
+
+		if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+			cache.evictAllBitmap();
+		} else if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN && cache instanceof LruBitmapCache) {
+			final LruBitmapCache lruCache = (LruBitmapCache) cache;
+			lruCache.trimToSize(lruCache.maxSize() / 2);
+		}
+	}
+
+	public static void shutDown() {
+		final KnImageLoader instance;
 
 		synchronized (KnImageLoader.class) {
+			instance = sInstance;
 			sInstance = null;
 		}
+
+		if (instance == null) return;
+		instance.mHandler.removeCallbacksAndMessages(null);
+		if (instance.mCache != null) instance.mCache.evictAllBitmap();
 	}
 
 	public interface ImageCache {
@@ -78,8 +149,18 @@ public final class KnImageLoader {
 		void evictAllBitmap();
 	}
 
+	/**
+	 * @return The memory cache, created on first call
+	 */
+	@NonNull
 	public ImageCache getImageCache() {
-		return mCache;
+		ImageCache cache = mCache;
+		if (cache != null) return cache;
+
+		synchronized (this) {
+			if (mCache == null) mCache = new LruBitmapCache(sMaxCacheSize);
+			return mCache;
+		}
 	}
 
 	public static ImageListener getImageListener(final ImageView view, final int defaultImageResId, final int errorImageResId) {
@@ -110,7 +191,8 @@ public final class KnImageLoader {
 		throwIfNotOnMainThread();
 
 		String cacheKey = getCacheKey(requestUrl, maxWidth, maxHeight, scaleType);
-		return mCache.getBitmap(cacheKey) != null;
+		final ImageCache cache = mCache;
+		return cache != null && cache.getBitmap(cacheKey) != null;
 	}
 
 	public ImageContainer get(String requestUrl, final ImageListener listener) {
@@ -126,7 +208,7 @@ public final class KnImageLoader {
 
 		final String cacheKey = getCacheKey(requestUrl, maxWidth, maxHeight, scaleType);
 
-		Bitmap cachedBitmap = mCache.getBitmap(cacheKey);
+		Bitmap cachedBitmap = getImageCache().getBitmap(cacheKey);
 		if (cachedBitmap != null) {
 			ImageContainer container = new ImageContainer(cachedBitmap, requestUrl, null, null);
 			imageListener.onResponse(container, true);
@@ -149,16 +231,16 @@ public final class KnImageLoader {
 	}
 
 	private KnRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, final String cacheKey) {
-		KnRequest KnRequest = KnHttp.get(requestUrl)
+		final KnRequest request = KnHttp.get(requestUrl)
 				.setTag("ImageRequestTag")
 				.setBitmapMaxHeight(maxHeight)
 				.setBitmapMaxWidth(maxWidth)
 				.setImageScaleType(scaleType)
 				.setBitmapConfig(Bitmap.Config.RGB_565)
-				.setBitmapOptions(mBitmapOptions)
+				.setBitmapOptions(sBitmapOptions)
 				.build();
 
-		KnRequest.getAsBitmap(new BitmapRequestListener() {
+		request.getAsBitmap(new BitmapRequestListener() {
 			@Override
 			public void onResponse(@NonNull Bitmap response, @NonNull Response okHttpResponse) {
 				onGetImageSuccess(cacheKey, response);
@@ -170,11 +252,18 @@ public final class KnImageLoader {
 			}
 		});
 
-		return KnRequest;
+		return request;
 	}
 
 	public void setBitmapDecodeOptions(BitmapFactory.Options bitmapOptions) {
-		mBitmapOptions = bitmapOptions;
+		setDefaultBitmapDecodeOptions(bitmapOptions);
+	}
+
+	/**
+	 * Decode options of the images loaded by KnImageLoader, without creating the loader
+	 */
+	public static void setDefaultBitmapDecodeOptions(@Nullable BitmapFactory.Options bitmapOptions) {
+		sBitmapOptions = bitmapOptions;
 	}
 
 	public void setBatchedResponseDelay(int newBatchedResponseDelayMs) {
@@ -182,7 +271,7 @@ public final class KnImageLoader {
 	}
 
 	private void onGetImageSuccess(String cacheKey, Bitmap response) {
-		mCache.putBitmap(cacheKey, response);
+		getImageCache().putBitmap(cacheKey, response);
 		BatchedImageRequest request = mInFlightRequests.remove(cacheKey);
 
 		if (request != null) {
@@ -274,10 +363,6 @@ public final class KnImageLoader {
 			mContainers.remove(container);
 			if (mContainers.isEmpty()) {
 				mRequest.cancel(true);
-				if (mRequest.isCanceled()) {
-					mRequest.destroy();
-					KnRequestQueue.gi().finish(mRequest);
-				}
 				return true;
 			}
 			return false;

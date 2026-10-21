@@ -1,10 +1,7 @@
 package ovh.karewan.knhttp.internal;
 
 import androidx.annotation.NonNull;
-
-import ovh.karewan.knhttp.common.KnConstants;
-import ovh.karewan.knhttp.interfaces.UploadProgressListener;
-import ovh.karewan.knhttp.model.Progress;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 
@@ -14,46 +11,56 @@ import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
 import okio.Okio;
-import okio.Sink;
 
 public final class RequestProgressBody extends RequestBody {
-	private final RequestBody requestBody;
-	private BufferedSink bufferedSink;
-	private UploadProgressHandler uploadProgressHandler;
+	private final RequestBody mRequestBody;
+	private final ProgressReporter mReporter;
 
-	public RequestProgressBody(RequestBody requestBody, UploadProgressListener uploadProgressListener) {
-		this.requestBody = requestBody;
-		if (uploadProgressListener != null) this.uploadProgressHandler = new UploadProgressHandler(uploadProgressListener);
+	public RequestProgressBody(@NonNull RequestBody requestBody, @NonNull ProgressReporter reporter) {
+		this.mRequestBody = requestBody;
+		this.mReporter = reporter;
 	}
 
+	@Nullable
+	@Override
 	public MediaType contentType() {
-		return requestBody.contentType();
+		return mRequestBody.contentType();
 	}
 
 	@Override
 	public long contentLength() throws IOException {
-		return requestBody.contentLength();
+		return mRequestBody.contentLength();
+	}
+
+	@Override
+	public boolean isOneShot() {
+		return mRequestBody.isOneShot();
 	}
 
 	@Override
 	public void writeTo(@NonNull BufferedSink sink) throws IOException {
-		if (bufferedSink == null) bufferedSink = Okio.buffer(sink(sink));
-		requestBody.writeTo(bufferedSink);
+		// A new counting sink for each call: OkHttp calls writeTo() again on retries and redirects
+		final CountingSink countingSink = new CountingSink(sink, contentLength());
+		final BufferedSink bufferedSink = Okio.buffer(countingSink);
+		mRequestBody.writeTo(bufferedSink);
 		bufferedSink.flush();
+		mReporter.onProgress(countingSink.mBytesWritten, countingSink.mContentLength, true);
 	}
 
-	private Sink sink(Sink sink) {
-		return new ForwardingSink(sink) {
-			long bytesWritten = 0L;
-			long contentLength = 0L;
+	private final class CountingSink extends ForwardingSink {
+		private final long mContentLength;
+		private long mBytesWritten = 0L;
 
-			@Override
-			public void write(@NonNull Buffer source, long byteCount) throws IOException {
-				super.write(source, byteCount);
-				if (contentLength == 0) contentLength = contentLength();
-				bytesWritten += byteCount;
-				if (uploadProgressHandler != null) uploadProgressHandler.obtainMessage(KnConstants.UPDATE, new Progress(bytesWritten, contentLength)).sendToTarget();
-			}
-		};
+		CountingSink(BufferedSink delegate, long contentLength) {
+			super(delegate);
+			mContentLength = contentLength;
+		}
+
+		@Override
+		public void write(@NonNull Buffer source, long byteCount) throws IOException {
+			super.write(source, byteCount);
+			mBytesWritten += byteCount;
+			mReporter.onProgress(mBytesWritten, mContentLength, false);
+		}
 	}
 }

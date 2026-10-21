@@ -10,17 +10,17 @@ import okhttp3.Connection;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
-import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSource;
+import ovh.karewan.knhttp.internal.RequestProgressBody;
 
-import static okhttp3.internal.platform.Platform.INFO;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -28,6 +28,10 @@ import androidx.annotation.NonNull;
 public final class HttpLoggingInterceptor implements Interceptor {
 
 	private static final Charset UTF8 = StandardCharsets.UTF_8;
+	private static final String TAG = "KnHttp";
+	private static final int MAX_LOG_LENGTH = 4000;
+	// Larger bodies are not logged: they would be held in memory (downloads, uploads...)
+	private static final long MAX_LOGGED_BODY_SIZE = 1024 * 1024;
 
 	public enum Level {
 		/**
@@ -91,9 +95,21 @@ public final class HttpLoggingInterceptor implements Interceptor {
 		void log(String message);
 
 		/**
-		 * A {@link Logger} defaults output appropriate for the current platform.
+		 * A {@link Logger} writing to Logcat, long messages are split in several lines.
 		 */
-		Logger DEFAULT = message -> Platform.get().log(message, INFO, null);
+		Logger DEFAULT = HttpLoggingInterceptor::logToLogcat;
+	}
+
+	static void logToLogcat(String message) {
+		for (int i = 0, length = message.length(); i < length; i++) {
+			int newline = message.indexOf('\n', i);
+			newline = newline != -1 ? newline : length;
+			do {
+				final int end = Math.min(newline, i + MAX_LOG_LENGTH);
+				Log.i(TAG, message.substring(i, end));
+				i = end;
+			} while (i < newline);
+		}
 	}
 
 	public HttpLoggingInterceptor() {
@@ -161,6 +177,9 @@ public final class HttpLoggingInterceptor implements Interceptor {
 
 			if (!logBody || !hasRequestBody) logger.log("--> END " + request.method());
 			else if (bodyEncoded(request.headers())) logger.log("--> END " + request.method() + " (encoded body omitted)");
+			// Writing a multipart body would also report a fake upload progress
+			else if (requestBody instanceof RequestProgressBody || requestBody instanceof MultipartBody) logger.log("--> END " + request.method() + " (multipart body omitted)");
+			else if (requestBody.contentLength() < 0 || requestBody.contentLength() > MAX_LOGGED_BODY_SIZE) logger.log("--> END " + request.method() + " (" + requestBody.contentLength() + "-byte body omitted)");
 			else {
 				Buffer buffer = new Buffer();
 				requestBody.writeTo(buffer);
@@ -200,13 +219,15 @@ public final class HttpLoggingInterceptor implements Interceptor {
 			Headers headers = response.headers();
 			for (int i = 0, count = headers.size(); i < count; i++) logger.log(headers.name(i) + ": " + headers.value(i));
 
-			if (!logBody || !HttpHeaders.promisesBody(response)) {
+			if (!logBody || !promisesBody(response)) {
 				logger.log("<-- END HTTP");
 			} else if (bodyEncoded(response.headers())) {
 				logger.log("<-- END HTTP (encoded body omitted)");
+			} else if (contentLength > MAX_LOGGED_BODY_SIZE || responseBody.source().request(MAX_LOGGED_BODY_SIZE + 1)) {
+				// Bounded buffering: the bytes read here stay available for the response
+				logger.log("<-- END HTTP (body larger than " + MAX_LOGGED_BODY_SIZE + " bytes omitted)");
 			} else {
 				BufferedSource source = responseBody.source();
-				source.request(Long.MAX_VALUE); // Buffer the entire body.
 				Buffer buffer = source.getBuffer();
 
 				Charset charset = UTF8;
@@ -252,6 +273,28 @@ public final class HttpLoggingInterceptor implements Interceptor {
 		} catch (EOFException e) {
 			return false; // Truncated UTF-8 sequence.
 		}
+	}
+
+	/**
+	 * Returns true if the response headers and status indicate that the response has a body
+	 * (public API equivalent of OkHttp's internal HttpHeaders.promisesBody()).
+	 */
+	static boolean promisesBody(Response response) {
+		if ("HEAD".equals(response.request().method())) return false;
+
+		final int code = response.code();
+		if ((code < 100 || code >= 200) && code != 204 && code != 304) return true;
+
+		// If the Content-Length or Transfer-Encoding headers disagree with the response code, the response is malformed: honor the headers
+		final String contentLength = response.header("Content-Length");
+		if (contentLength != null) {
+			try {
+				if (Long.parseLong(contentLength) != -1L) return true;
+			} catch (NumberFormatException ignore) {
+			}
+		}
+
+		return "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"));
 	}
 
 	private boolean bodyEncoded(Headers headers) {

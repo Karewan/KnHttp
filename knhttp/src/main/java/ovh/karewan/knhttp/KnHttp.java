@@ -8,44 +8,74 @@ import androidx.annotation.Nullable;
 
 import ovh.karewan.knhttp.common.KnRequest;
 import ovh.karewan.knhttp.common.KnSettings;
-import ovh.karewan.knhttp.core.Core;
+import ovh.karewan.knhttp.common.Method;
 import ovh.karewan.knhttp.interceptors.HttpLoggingInterceptor.Level;
+import ovh.karewan.knhttp.internal.KnEngine;
 import ovh.karewan.knhttp.internal.KnImageLoader;
-import ovh.karewan.knhttp.internal.KnRequestQueue;
-import ovh.karewan.knhttp.internal.InternalNetworking;
 
 import okhttp3.OkHttpClient;
 
-@SuppressWarnings({"unused", "rawtypes"})
+@SuppressWarnings("unused")
 public final class KnHttp {
+	private KnHttp() {}
+
 	/**
 	 * Initializes KnHttp with the default config.
+	 * The OkHttp client is built in background, this call returns immediately.
+	 * @param context The context
 	 */
 	public static void init(@NonNull Context context) {
-		InternalNetworking.gi().setSettings(null);
-		InternalNetworking.gi().initOkHttpClient(context);
-		KnRequestQueue.gi();
+		KnEngine.get().init(context, null);
 	}
 
 	/**
 	 * Initializes KnHttp with a custom config.
+	 * The OkHttp client is built in background, this call returns immediately.
 	 * @param context The context
+	 * @param settings The settings
 	 */
 	public static void init(@NonNull Context context, @NonNull KnSettings settings) {
-		InternalNetworking.gi().setSettings(settings);
-		InternalNetworking.gi().initOkHttpClient(context.getApplicationContext());
-		KnRequestQueue.gi();
+		KnEngine.get().init(context, settings);
 	}
-
 
 	/**
 	 * Initializes KnHttp with the specified OkHttpClient.
 	 * @param okHttpClient The okHttpClient
 	 */
 	public static void init(@NonNull OkHttpClient okHttpClient) {
-		InternalNetworking.gi().setSettings(null);
-		InternalNetworking.gi().setClient(okHttpClient);
-		KnRequestQueue.gi();
+		KnEngine.get().init(okHttpClient);
+	}
+
+	/**
+	 * Returns the OkHttpClient used by KnHttp, to share it with other libraries (Socket.IO, Retrofit...)
+	 * and benefit from the same connection pool and TLS configuration.
+	 * The client is built on the first call if needed: avoid calling it on the main thread right after init().
+	 * A new client is created by init() and enableLogging(), call this method again after them.
+	 * @return The OkHttpClient
+	 */
+	@NonNull
+	public static OkHttpClient getOkHttpClient() {
+		return KnEngine.get().getClient();
+	}
+
+	/**
+	 * Sets the max number of asynchronous requests running at the same time (64 by default).
+	 * Below this limit a new request starts at once, whatever its priority. Above, the requests wait
+	 * and are started by priority. {@link ovh.karewan.knhttp.common.Priority#IMMEDIATE} requests ignore the limit.
+	 * Can be changed at any time.
+	 * @param maxConcurrentRequests The limit, at least 1
+	 */
+	public static void setMaxConcurrentRequests(int maxConcurrentRequests) {
+		KnEngine.get().setMaxConcurrentRequests(maxConcurrentRequests);
+	}
+
+	/**
+	 * Sets the max size of the memory cache of {@link KnImageLoader} (1/8 of the heap by default).
+	 * The cache is only created when KnImageLoader is used, and only holds the loaded images.
+	 * @param maxSizeBytes The max size in bytes
+	 */
+	public static void setBitmapCacheMaxSize(int maxSizeBytes) {
+		KnImageLoader.setMaxCacheSize(maxSizeBytes);
 	}
 
 	/**
@@ -53,7 +83,7 @@ public final class KnHttp {
 	 * @param decodeOptions The decode config for Bitmaps
 	 */
 	public static void setBitmapDecodeOptions(@NonNull BitmapFactory.Options decodeOptions) {
-		KnImageLoader.gi().setBitmapDecodeOptions(decodeOptions);
+		KnImageLoader.setDefaultBitmapDecodeOptions(decodeOptions);
 	}
 
 	/**
@@ -145,7 +175,7 @@ public final class KnHttp {
 	 * @param method The HTTP METHOD for the request
 	 * @return The DynamicRequestBuilder
 	 */
-	public static KnRequest.DynamicRequestBuilder request(@NonNull String url, int method) {
+	public static KnRequest.DynamicRequestBuilder request(@NonNull String url, @NonNull Method method) {
 		return new KnRequest.DynamicRequestBuilder(url, method);
 	}
 
@@ -155,7 +185,8 @@ public final class KnHttp {
 	 * @param tag The tag with which requests are to be cancelled
 	 */
 	public static void cancel(@NonNull Object tag) {
-		KnRequestQueue.gi().cancelRequestWithGivenTag(tag, false);
+		final KnEngine engine = KnEngine.peek();
+		if (engine != null) engine.cancelRequestWithGivenTag(tag, false);
 	}
 
 	/**
@@ -164,21 +195,24 @@ public final class KnHttp {
 	 * @param tag The tag with which requests are to be cancelled
 	 */
 	public static void forceCancel(@NonNull Object tag) {
-		KnRequestQueue.gi().cancelRequestWithGivenTag(tag, true);
+		final KnEngine engine = KnEngine.peek();
+		if (engine != null) engine.cancelRequestWithGivenTag(tag, true);
 	}
 
 	/**
 	 * Method to cancel all given request
 	 */
 	public static void cancelAll() {
-		KnRequestQueue.gi().cancelAll(false);
+		final KnEngine engine = KnEngine.peek();
+		if (engine != null) engine.cancelAll(false);
 	}
 
 	/**
 	 * Method to force cancel all given request
 	 */
 	public static void forceCancelAll() {
-		KnRequestQueue.gi().cancelAll(true);
+		final KnEngine engine = KnEngine.peek();
+		if (engine != null) engine.cancelAll(true);
 	}
 
 	/**
@@ -189,11 +223,11 @@ public final class KnHttp {
 	}
 
 	/**
-	 * Method to enable logging with tag
+	 * Method to enable logging with tag, can be called before or after init()
 	 * @param level The level for logging
 	 */
 	public static void enableLogging(@NonNull Level level) {
-		InternalNetworking.gi().enableLogging(level);
+		KnEngine.get().enableLogging(level);
 	}
 
 	/**
@@ -201,7 +235,7 @@ public final class KnHttp {
 	 * @param key The key of the bitmap
 	 */
 	public static void evictBitmap(@NonNull String key) {
-		final KnImageLoader.ImageCache imageCache = KnImageLoader.gi().getImageCache();
+		final KnImageLoader.ImageCache imageCache = KnImageLoader.peekImageCache();
 		if (imageCache != null) imageCache.evictBitmap(key);
 	}
 
@@ -209,7 +243,7 @@ public final class KnHttp {
 	 * Method to clear LruCache
 	 */
 	public static void evictAllBitmap() {
-		final KnImageLoader.ImageCache imageCache = KnImageLoader.gi().getImageCache();
+		final KnImageLoader.ImageCache imageCache = KnImageLoader.peekImageCache();
 		if (imageCache != null) imageCache.evictAllBitmap();
 	}
 
@@ -218,7 +252,7 @@ public final class KnHttp {
 	 * @param userAgent The userAgent
 	 */
 	public static void setUserAgent(@Nullable String userAgent) {
-		InternalNetworking.gi().setUserAgent(userAgent);
+		KnEngine.get().setUserAgent(userAgent);
 	}
 
 	/**
@@ -227,16 +261,16 @@ public final class KnHttp {
 	 * @return The request is running or not
 	 */
 	public static boolean isRequestRunning(@NonNull Object tag) {
-		return KnRequestQueue.gi().isRequestRunning(tag);
+		final KnEngine engine = KnEngine.peek();
+		return engine != null && engine.isRequestRunning(tag);
 	}
 
 	/**
-	 * Shuts KnHttp down
+	 * Shuts KnHttp down: cancels all the requests, releases the threads and the idle connections.
+	 * KnHttp can be used again after, init() must be called again to restore a custom config.
 	 */
 	public static void shutDown() {
 		KnImageLoader.shutDown();
-		KnRequestQueue.shutDown();
-		InternalNetworking.shutDown();
-		Core.shutDown();
+		KnEngine.shutDown();
 	}
 }

@@ -1,147 +1,47 @@
 package ovh.karewan.knhttp.internal;
 
+import androidx.annotation.NonNull;
+
 import ovh.karewan.knhttp.common.KnRequest;
 import ovh.karewan.knhttp.common.KnResponse;
 import ovh.karewan.knhttp.common.Priority;
-import ovh.karewan.knhttp.common.ResponseType;
-import ovh.karewan.knhttp.core.Core;
-import ovh.karewan.knhttp.error.KnError;
-import ovh.karewan.knhttp.utils.SourceCloseUtil;
 import ovh.karewan.knhttp.utils.Utils;
 
-import okhttp3.Response;
-import ovh.karewan.knhttp.common.RequestType;
-
-@SuppressWarnings("rawtypes")
-public class InternalRunnable implements Runnable {
+public final class InternalRunnable implements Runnable {
 
 	private final Priority priority;
 	public final int sequence;
 	public final KnRequest request;
+	private final KnEngine engine;
 
-	public InternalRunnable(KnRequest request) {
+	public InternalRunnable(@NonNull KnRequest request) {
 		this.request = request;
 		this.sequence = request.getSequenceNumber();
 		this.priority = request.getPriority();
+		this.engine = request.getEngine();
 	}
 
 	@Override
 	public void run() {
+		// Cancelled while queued: the cancellation has already been delivered
+		if (request.isCanceled()) return;
+
 		request.setRunning(true);
-		switch (request.getRequestType()) {
-			case RequestType.SIMPLE:
-				executeSimpleRequest();
-				break;
-			case RequestType.DOWNLOAD:
-				executeDownloadRequest();
-				break;
-			case RequestType.MULTIPART:
-				executeUploadRequest();
-				break;
-		}
-		request.setRunning(false);
-	}
-
-	private void executeSimpleRequest() {
-		Response okHttpResponse = null;
 		try {
-			okHttpResponse = InternalNetworking.gi().performSimpleRequest(request);
-
-			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new KnError()));
-				return;
+			KnResponse<?> response;
+			try {
+				response = RequestExecutor.execute(request, engine);
+			} catch (Throwable t) {
+				// Never leave a listener without a callback
+				response = KnResponse.failed(Utils.getErrorForConnection(t));
 			}
-
-			if (request.getResponseAs() == ResponseType.OK_HTTP_RESPONSE) {
-				request.deliverOkHttpResponse(okHttpResponse);
-				return;
-			}
-
-			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
-				return;
-			}
-
-			KnResponse response = request.parseResponse(okHttpResponse);
-			if (!response.isSuccess()) {
-				deliverError(request, response.getError());
-				return;
-			}
-			response.setOkHttpResponse(okHttpResponse);
-			request.deliverResponse(response);
-		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
+			request.deliver(response);
 		} finally {
-			SourceCloseUtil.close(okHttpResponse);
-		}
-	}
-
-	private void executeDownloadRequest() {
-		Response okHttpResponse = null;
-		try {
-			okHttpResponse = InternalNetworking.gi().performDownloadRequest(request);
-
-			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new KnError()));
-				return;
-			}
-
-			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
-				return;
-			}
-
-			request.updateDownloadCompletion(okHttpResponse);
-		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
-		} finally {
-			SourceCloseUtil.close(okHttpResponse);
-		}
-	}
-
-	private void executeUploadRequest() {
-		Response okHttpResponse = null;
-		try {
-			okHttpResponse = InternalNetworking.gi().performUploadRequest(request);
-
-			if (okHttpResponse == null) {
-				deliverError(request, Utils.getErrorForConnection(new KnError()));
-				return;
-			}
-
-			if (request.getResponseAs() == ResponseType.OK_HTTP_RESPONSE) {
-				request.deliverOkHttpResponse(okHttpResponse);
-				return;
-			}
-
-			if (okHttpResponse.code() >= 400) {
-				deliverError(request, Utils.getErrorForServerResponse(new KnError(okHttpResponse), request, okHttpResponse.code()));
-				return;
-			}
-
-			KnResponse response = request.parseResponse(okHttpResponse);
-			if (!response.isSuccess()) {
-				deliverError(request, response.getError());
-				return;
-			}
-
-			response.setOkHttpResponse(okHttpResponse);
-			request.deliverResponse(response);
-		} catch (Exception e) {
-			deliverError(request, Utils.getErrorForConnection(new KnError(e)));
-		} finally {
-			SourceCloseUtil.close(okHttpResponse);
+			request.setRunning(false);
 		}
 	}
 
 	public Priority getPriority() {
 		return priority;
-	}
-
-	private void deliverError(final KnRequest request, final KnError knError) {
-		Core.gi().getExecutorSupplier().forMainThreadTasks().execute(() -> {
-			request.deliverError(knError);
-			request.finish();
-		});
 	}
 }

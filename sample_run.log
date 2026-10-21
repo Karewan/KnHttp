@@ -1,0 +1,364 @@
+--------- beginning of main
+10-21 13:08:57.641 I/KnHttpSample(23372): ▶ POST an object as JSON
+10-21 13:08:57.658 I/KnHttp  (23372): --> POST https://jsonplaceholder.typicode.com/posts http/1.1 (78-byte body)
+10-21 13:09:00.472 I/KnHttp  (23372): <-- HTTP FAILED: java.net.UnknownHostException: Unable to resolve host "jsonplaceholder.typicode.com": No address associated with hostname
+10-21 13:09:00.475 I/KnHttpSample(23372): Error NETWORK (retryable) → "No connection, check your network", cause: java.net.UnknownHostException: Unable to resolve host "jsonplaceholder.typicode.com": No address associated with hostname
+10-21 13:09:00.691 I/KnHttpSample(23372): ▶ TLS: version, cipher, key exchange, certificate
+10-21 13:09:00.710 I/KnHttp  (23372): --> GET https://www.cloudflare.com/cdn-cgi/trace http/1.1
+10-21 13:09:01.070 I/KnHttp  (23372): <-- 200  https://www.cloudflare.com/cdn-cgi/trace (359ms, unknown-length body)
+10-21 13:09:01.078 I/KnHttpSample(23372): HTTP protocol: h2
+10-21 13:09:01.088 I/KnHttpSample(23372): TLS: TLSv1.3 / TLS_AES_128_GCM_SHA256
+10-21 13:09:01.094 I/KnHttpSample(23372): Server certificate key: EC
+10-21 13:09:01.101 I/KnHttpSample(23372): Cloudflare sees http=http/2
+10-21 13:09:01.106 I/KnHttpSample(23372): Cloudflare sees tls=TLSv1.3
+10-21 13:09:01.112 I/KnHttpSample(23372): Cloudflare sees kex=X25519
+10-21 13:09:01.121 I/KnHttpSample(23372): Done in 422 ms
+10-21 13:09:01.814 I/KnHttpSample(23372): ▶ Path & query parameters (encoded)
+10-21 13:09:01.835 I/KnHttp  (23372): --> GET https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z http/1.1
+10-21 13:09:02.254 I/KnHttp  (23372): <-- 200  https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z (418ms, unknown-length body)
+10-21 13:09:02.267 I/KnHttpSample(23372): Requested URL: https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z
+10-21 13:09:02.277 I/KnHttpSample(23372): Server saw: https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z
+10-21 13:09:06.250 I/KnHttpSample(23372): ▶ GET JSON object
+10-21 13:09:06.276 I/KnHttpSample(23372): ▶ HTTP error 404
+10-21 13:09:06.286 I/KnHttp  (23372): --> GET https://httpbingo.org/status/404 http/1.1
+10-21 13:09:06.290 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/1 http/1.1
+10-21 13:09:06.500 I/KnHttp  (23372): <-- 404  https://httpbingo.org/status/404 (213ms, 0-byte body)
+10-21 13:09:06.507 I/KnHttpSample(23372): Error HTTP 404 → "The request was refused"
+10-21 13:09:06.570 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/1 (279ms, unknown-length body)
+10-21 13:09:09.428 I/KnHttpSample(23372): Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit (3165 ms, http/1.1)
+10-21 13:09:10.941 I/KnHttpSample(23372): ▶ GET object list (POJO mapping)
+10-21 13:09:10.956 I/KnHttpSample(23372): ▶ Invalid URL
+10-21 13:09:10.963 I/KnHttpSample(23372): Error INVALID_REQUEST → "Something went wrong", cause: java.lang.IllegalArgumentException: Invalid URL: htp//not a valid url
+10-21 13:09:10.971 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts http/1.1
+10-21 13:09:11.071 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts (99ms, unknown-length body)
+10-21 13:09:11.154 I/KnHttpSample(23372): 100 posts mapped, first: "sunt aut facere repellat provident occaecati excepturi optio reprehenderit" (209 ms)
+10-21 13:09:13.396 I/KnHttpSample(23372): ▶ 50 parallel requests
+10-21 13:09:13.413 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/2 http/1.1
+10-21 13:09:13.421 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/1 http/1.1
+10-21 13:09:13.430 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/5 http/1.1
+10-21 13:09:13.490 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/15 http/1.1
+10-21 13:09:13.509 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/21 http/1.1
+10-21 13:09:13.524 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/7 http/1.1
+10-21 13:09:13.529 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/25 http/1.1
+10-21 13:09:13.540 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/6 http/1.1
+10-21 13:09:13.543 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/26 http/1.1
+10-21 13:09:13.560 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/4 http/1.1
+10-21 13:09:13.571 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/3 http/1.1
+10-21 13:09:13.577 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/9 http/1.1
+10-21 13:09:13.578 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/8 http/1.1
+10-21 13:09:13.580 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/37 http/1.1
+10-21 13:09:13.584 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/10 http/1.1
+10-21 13:09:13.588 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/35 http/1.1
+10-21 13:09:13.589 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/38 http/1.1
+10-21 13:09:13.592 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/18 http/1.1
+10-21 13:09:13.594 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/19 http/1.1
+10-21 13:09:13.596 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/17 http/1.1
+10-21 13:09:13.597 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/13 http/1.1
+10-21 13:09:14.805 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/24 http/1.1
+10-21 13:09:14.812 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/29 http/1.1
+10-21 13:09:14.814 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/50 http/1.1
+10-21 13:09:14.814 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/23 http/1.1
+10-21 13:09:14.817 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/49 http/1.1
+10-21 13:09:14.817 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/30 http/1.1
+10-21 13:09:14.818 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/12 http/1.1
+10-21 13:09:14.818 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/31 http/1.1
+10-21 13:09:14.818 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/28 http/1.1
+10-21 13:09:14.819 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/32 http/1.1
+10-21 13:09:14.821 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/34 http/1.1
+10-21 13:09:14.821 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/33 http/1.1
+10-21 13:09:14.823 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/22 http/1.1
+10-21 13:09:14.824 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/36 http/1.1
+10-21 13:09:14.824 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/11 http/1.1
+10-21 13:09:14.828 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/47 http/1.1
+10-21 13:09:14.829 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/42 http/1.1
+10-21 13:09:14.831 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/39 http/1.1
+10-21 13:09:14.833 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/41 http/1.1
+10-21 13:09:14.834 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/20 http/1.1
+10-21 13:09:14.839 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/40 http/1.1
+10-21 13:09:14.841 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/16 http/1.1
+10-21 13:09:14.843 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/27 http/1.1
+10-21 13:09:14.851 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/48 http/1.1
+10-21 13:09:14.852 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/44 http/1.1
+10-21 13:09:14.858 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/43 http/1.1
+10-21 13:09:14.860 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/45 http/1.1
+10-21 13:09:14.872 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/14 http/1.1
+10-21 13:09:14.886 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/46 http/1.1
+10-21 13:09:15.113 I/KnHttpSample(23372): ▶ POST an object as JSON
+10-21 13:09:15.239 I/KnHttp  (23372): --> POST https://jsonplaceholder.typicode.com/posts http/1.1 (78-byte body)
+10-21 13:09:15.355 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/49 (538ms, unknown-length body)
+10-21 13:09:15.410 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/37 (898ms, unknown-length body)
+10-21 13:09:15.426 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/33 (604ms, unknown-length body)
+10-21 13:09:15.440 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/40 (600ms, unknown-length body)
+10-21 13:09:15.461 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/2 (1116ms, unknown-length body)
+10-21 13:09:15.481 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/16 (639ms, unknown-length body)
+10-21 13:09:15.491 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/29 (678ms, unknown-length body)
+10-21 13:09:15.494 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/10 (978ms, unknown-length body)
+10-21 13:09:15.502 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/24 (697ms, unknown-length body)
+10-21 13:09:15.513 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/9 (1005ms, unknown-length body)
+10-21 13:09:15.536 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/41 (703ms, unknown-length body)
+10-21 13:09:15.582 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/28 (763ms, unknown-length body)
+10-21 13:09:15.596 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/35 (1076ms, unknown-length body)
+10-21 13:09:15.605 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/50 (786ms, unknown-length body)
+10-21 13:09:15.628 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/12 (810ms, unknown-length body)
+10-21 13:09:15.640 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/26 (1166ms, unknown-length body)
+10-21 13:09:15.654 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/20 (819ms, unknown-length body)
+10-21 13:09:15.657 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/23 (842ms, unknown-length body)
+10-21 13:09:15.659 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/18 (1135ms, unknown-length body)
+10-21 13:09:15.663 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/4 (1171ms, unknown-length body)
+10-21 13:09:15.666 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/34 (845ms, unknown-length body)
+10-21 13:09:15.680 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/30 (862ms, unknown-length body)
+10-21 13:09:15.710 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/46 (823ms, unknown-length body)
+10-21 13:09:15.724 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/11 (899ms, unknown-length body)
+10-21 13:09:15.727 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/5 (1366ms, unknown-length body)
+10-21 13:09:15.732 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/47 (904ms, unknown-length body)
+10-21 13:09:15.776 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/36 (952ms, unknown-length body)
+10-21 13:09:15.785 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/8 (1276ms, unknown-length body)
+10-21 13:09:15.806 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/17 (1279ms, unknown-length body)
+10-21 13:09:15.825 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/21 (1384ms, unknown-length body)
+10-21 13:09:15.832 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/19 (1307ms, unknown-length body)
+10-21 13:09:15.838 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/32 (1018ms, unknown-length body)
+10-21 13:09:15.845 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/48 (991ms, unknown-length body)
+10-21 13:09:15.858 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/31 (1039ms, unknown-length body)
+10-21 13:09:15.865 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/15 (1443ms, unknown-length body)
+10-21 13:09:15.887 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/27 (1043ms, unknown-length body)
+10-21 13:09:15.895 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/6 (1423ms, unknown-length body)
+10-21 13:09:15.902 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/7 (1446ms, unknown-length body)
+10-21 13:09:15.911 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/43 (1052ms, unknown-length body)
+10-21 13:09:15.925 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/1 (1567ms, unknown-length body)
+10-21 13:09:15.930 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/3 (1427ms, unknown-length body)
+10-21 13:09:15.934 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/45 (1074ms, unknown-length body)
+10-21 13:09:15.936 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/39 (1105ms, unknown-length body)
+10-21 13:09:15.940 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/42 (1101ms, unknown-length body)
+10-21 13:09:15.943 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/22 (1120ms, unknown-length body)
+10-21 13:09:15.946 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/44 (1094ms, unknown-length body)
+10-21 13:09:15.954 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/38 (1433ms, unknown-length body)
+10-21 13:09:15.955 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/14 (1083ms, unknown-length body)
+10-21 13:09:15.957 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/25 (1497ms, unknown-length body)
+10-21 13:09:15.976 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/13 (1448ms, unknown-length body)
+10-21 13:09:15.985 I/KnHttpSample(23372): 50 requests done in 2582 ms (0 errors)
+10-21 13:09:16.014 I/KnHttp  (23372): <-- 201  https://jsonplaceholder.typicode.com/posts (774ms, 97-byte body)
+10-21 13:09:16.016 I/KnHttpSample(23372): Created post #101: "KnHttp é ✓" (HTTP 201)
+10-21 13:09:19.777 I/KnHttpSample(23372): ▶ Path & query parameters (encoded)
+10-21 13:09:19.796 I/KnHttp  (23372): --> GET https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z http/1.1
+10-21 13:09:19.982 I/KnHttp  (23372): <-- 200  https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z (186ms, unknown-length body)
+10-21 13:09:19.995 I/KnHttpSample(23372): Requested URL: https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z
+10-21 13:09:20.000 I/KnHttpSample(23372): Server saw: https://httpbingo.org/anything/a%20b%2Fc%3F%C3%A9?q=x%20y%26z
+10-21 13:09:21.771 I/KnHttpSample(23372): ▶ Priorities (limit set to 1)
+10-21 13:09:21.775 I/KnHttpSample(23372): Limit = 1: a slow LOW request takes the slot, LOW / MEDIUM / HIGH wait, IMMEDIATE ignores the limit
+10-21 13:09:21.778 I/KnHttpSample(23372): Expected order: immediate, slow, high, medium, low
+10-21 13:09:21.790 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=immediate http/1.1
+10-21 13:09:21.790 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/2 http/1.1
+10-21 13:09:21.965 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=immediate (174ms, unknown-length body)
+10-21 13:09:21.978 I/KnHttpSample(23372): Finished: immediate (+199 ms)
+10-21 13:09:24.140 I/KnHttp  (23372): <-- 200  https://httpbingo.org/delay/2 (991ms, unknown-length body)
+10-21 13:09:24.147 I/KnHttpSample(23372): Finished: slow (+2367 ms)
+10-21 13:09:24.148 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=high http/1.1
+10-21 13:09:24.226 I/KnHttpSample(23372): ▶ HTTP error 404
+10-21 13:09:24.304 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=high (154ms, unknown-length body)
+10-21 13:09:24.320 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=medium http/1.1
+10-21 13:09:24.332 I/KnHttpSample(23372): Finished: high (+2553 ms)
+10-21 13:09:24.479 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=medium (158ms, unknown-length body)
+10-21 13:09:24.516 I/KnHttpSample(23372): Finished: medium (+2736 ms)
+10-21 13:09:24.517 I/KnHttp  (23372): --> GET https://httpbingo.org/status/404 http/1.1
+10-21 13:09:24.691 I/KnHttp  (23372): <-- 404  https://httpbingo.org/status/404 (173ms, 0-byte body)
+10-21 13:09:24.697 I/KnHttpSample(23372): Error HTTP 404 → "The request was refused"
+10-21 13:09:24.700 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=low http/1.1
+10-21 13:09:24.873 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=low (172ms, unknown-length body)
+10-21 13:09:24.881 I/KnHttpSample(23372): Finished: low (+3101 ms)
+10-21 13:09:24.884 I/KnHttpSample(23372): Order: [immediate, slow, high, medium, low], limit restored to 64
+10-21 13:09:28.404 I/KnHttpSample(23372): ▶ Invalid URL
+10-21 13:09:28.416 I/KnHttpSample(23372): Error INVALID_REQUEST → "Something went wrong", cause: java.lang.IllegalArgumentException: Invalid URL: htp//not a valid url
+10-21 13:09:31.137 I/KnHttpSample(23372): ▶ 50 parallel requests
+10-21 13:09:31.155 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/3 http/1.1
+10-21 13:09:31.218 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/42 http/1.1
+10-21 13:09:31.221 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/7 http/1.1
+10-21 13:09:31.222 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/39 http/1.1
+10-21 13:09:31.223 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/31 http/1.1
+10-21 13:09:31.224 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/14 http/1.1
+10-21 13:09:31.225 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/9 http/1.1
+10-21 13:09:31.226 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/4 http/1.1
+10-21 13:09:31.228 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/5 http/1.1
+10-21 13:09:31.229 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/43 http/1.1
+10-21 13:09:31.230 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/1 http/1.1
+10-21 13:09:31.231 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/30 http/1.1
+10-21 13:09:31.232 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/8 http/1.1
+10-21 13:09:31.233 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/12 http/1.1
+10-21 13:09:31.233 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/37 http/1.1
+10-21 13:09:31.234 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/6 http/1.1
+10-21 13:09:31.235 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/10 http/1.1
+10-21 13:09:31.241 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/2 http/1.1
+10-21 13:09:31.243 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/17 http/1.1
+10-21 13:09:31.245 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/23 http/1.1
+10-21 13:09:31.246 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/35 http/1.1
+10-21 13:09:31.246 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/3 (91ms, unknown-length body)
+10-21 13:09:31.251 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/36 http/1.1
+10-21 13:09:31.252 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/16 http/1.1
+10-21 13:09:31.253 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/11 http/1.1
+10-21 13:09:31.254 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/13 http/1.1
+10-21 13:09:31.256 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/48 http/1.1
+10-21 13:09:31.257 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/44 http/1.1
+10-21 13:09:31.259 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/47 http/1.1
+10-21 13:09:31.260 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/28 http/1.1
+10-21 13:09:31.261 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/20 http/1.1
+10-21 13:09:31.262 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/22 http/1.1
+10-21 13:09:31.264 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/26 http/1.1
+10-21 13:09:31.267 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/46 http/1.1
+10-21 13:09:31.268 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/19 http/1.1
+10-21 13:09:31.269 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/40 http/1.1
+10-21 13:09:31.270 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/34 http/1.1
+10-21 13:09:31.271 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/49 http/1.1
+10-21 13:09:31.272 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/15 http/1.1
+10-21 13:09:31.273 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/50 http/1.1
+10-21 13:09:31.274 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/45 http/1.1
+10-21 13:09:31.275 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/21 http/1.1
+10-21 13:09:31.276 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/32 http/1.1
+10-21 13:09:31.278 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/27 http/1.1
+10-21 13:09:31.278 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/38 http/1.1
+10-21 13:09:31.280 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/41 http/1.1
+10-21 13:09:31.283 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/25 http/1.1
+10-21 13:09:31.284 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/29 http/1.1
+10-21 13:09:31.285 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/18 http/1.1
+10-21 13:09:31.290 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/33 http/1.1
+10-21 13:09:31.304 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/24 http/1.1
+10-21 13:09:31.350 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/39 (127ms, unknown-length body)
+10-21 13:09:31.382 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/14 (158ms, unknown-length body)
+10-21 13:09:31.411 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/4 (185ms, unknown-length body)
+10-21 13:09:31.430 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/29 (145ms, unknown-length body)
+10-21 13:09:31.489 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/31 (265ms, unknown-length body)
+10-21 13:09:31.492 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/42 (256ms, unknown-length body)
+10-21 13:09:31.507 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/30 (275ms, unknown-length body)
+10-21 13:09:31.509 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/6 (274ms, unknown-length body)
+10-21 13:09:31.519 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/8 (286ms, unknown-length body)
+10-21 13:09:31.524 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/2 (283ms, unknown-length body)
+10-21 13:09:31.538 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/43 (305ms, unknown-length body)
+10-21 13:09:31.538 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/11 (285ms, unknown-length body)
+10-21 13:09:31.555 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/1 (324ms, unknown-length body)
+10-21 13:09:31.569 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/10 (334ms, unknown-length body)
+10-21 13:09:31.588 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/16 (335ms, unknown-length body)
+10-21 13:09:31.590 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/9 (364ms, unknown-length body)
+10-21 13:09:31.609 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/47 (349ms, unknown-length body)
+10-21 13:09:31.613 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/18 (327ms, unknown-length body)
+10-21 13:09:31.616 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/7 (394ms, unknown-length body)
+10-21 13:09:31.626 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/13 (372ms, unknown-length body)
+10-21 13:09:31.641 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/19 (373ms, unknown-length body)
+10-21 13:09:31.658 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/5 (429ms, unknown-length body)
+10-21 13:09:31.651 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/23 (406ms, unknown-length body)
+10-21 13:09:31.665 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/15 (392ms, unknown-length body)
+10-21 13:09:31.677 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/17 (434ms, unknown-length body)
+10-21 13:09:31.678 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/40 (408ms, unknown-length body)
+10-21 13:09:31.682 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/12 (449ms, unknown-length body)
+10-21 13:09:31.688 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/38 (409ms, unknown-length body)
+10-21 13:09:31.694 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/27 (416ms, unknown-length body)
+10-21 13:09:31.701 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/26 (437ms, unknown-length body)
+10-21 13:09:31.706 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/24 (401ms, unknown-length body)
+10-21 13:09:31.717 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/50 (444ms, unknown-length body)
+10-21 13:09:31.720 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/45 (445ms, unknown-length body)
+10-21 13:09:31.722 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/28 (462ms, unknown-length body)
+10-21 13:09:31.724 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/21 (448ms, unknown-length body)
+10-21 13:09:31.731 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/41 (450ms, unknown-length body)
+10-21 13:09:31.739 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/35 (493ms, unknown-length body)
+10-21 13:09:31.741 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/46 (473ms, unknown-length body)
+10-21 13:09:31.751 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/32 (474ms, unknown-length body)
+10-21 13:09:31.760 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/22 (497ms, unknown-length body)
+10-21 13:09:31.762 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/33 (471ms, unknown-length body)
+10-21 13:09:31.766 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/36 (514ms, unknown-length body)
+10-21 13:09:31.780 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/20 (517ms, unknown-length body)
+10-21 13:09:31.782 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/44 (524ms, unknown-length body)
+10-21 13:09:31.786 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/34 (515ms, unknown-length body)
+10-21 13:09:31.796 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/37 (562ms, unknown-length body)
+10-21 13:09:31.798 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/49 (526ms, unknown-length body)
+10-21 13:09:31.803 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/25 (519ms, unknown-length body)
+10-21 13:09:31.805 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/48 (549ms, unknown-length body)
+10-21 13:09:31.814 I/KnHttpSample(23372): 50 requests done in 667 ms (0 errors)
+10-21 13:09:31.939 I/KnHttpSample(23372): ▶ Per-request timeouts
+10-21 13:09:31.946 I/KnHttpSample(23372): Server answers after 3 s, read timeout of this request: 1 s
+10-21 13:09:31.973 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/3 http/1.1
+10-21 13:09:34.377 I/KnHttp  (23372): <-- HTTP FAILED: java.net.SocketTimeoutException: timeout
+10-21 13:09:34.401 I/KnHttpSample(23372): Timeout as expected after 2455 ms: java.net.SocketTimeoutException: timeout
+10-21 13:09:34.405 I/KnHttpSample(23372): Same request with a read timeout of 10 s...
+10-21 13:09:34.408 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/3 http/1.1
+10-21 13:09:38.149 I/KnHttp  (23372): <-- 200  https://httpbingo.org/delay/3 (1331ms, unknown-length body)
+10-21 13:09:38.154 I/KnHttpSample(23372): Success after 3749 ms
+10-21 13:09:39.715 I/KnHttpSample(23372): ▶ Priorities (limit set to 1)
+10-21 13:09:39.720 I/KnHttpSample(23372): Limit = 1: a slow LOW request takes the slot, LOW / MEDIUM / HIGH wait, IMMEDIATE ignores the limit
+10-21 13:09:39.722 I/KnHttpSample(23372): Expected order: immediate, slow, high, medium, low
+10-21 13:09:39.729 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=immediate http/1.1
+10-21 13:09:39.731 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/2 http/1.1
+10-21 13:09:39.886 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=immediate (156ms, unknown-length body)
+10-21 13:09:39.896 I/KnHttpSample(23372): Finished: immediate (+170 ms)
+10-21 13:09:41.230 I/KnHttpSample(23372): ▶ Cancel a request
+10-21 13:09:42.092 I/KnHttp  (23372): <-- 200  https://httpbingo.org/delay/2 (1217ms, unknown-length body)
+10-21 13:09:42.098 I/KnHttpSample(23372): Finished: slow (+2372 ms)
+10-21 13:09:42.099 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=high http/1.1
+10-21 13:09:42.101 I/KnHttpSample(23372): KnHttp.cancel("cancel-demo")
+10-21 13:09:42.102 I/KnHttpSample(23372): onError() after 864 ms, cancellation = true
+10-21 13:09:42.250 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=high (151ms, unknown-length body)
+10-21 13:09:42.258 I/KnHttpSample(23372): Finished: high (+2532 ms)
+10-21 13:09:42.259 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=medium http/1.1
+10-21 13:09:42.423 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=medium (164ms, unknown-length body)
+10-21 13:09:42.435 I/KnHttpSample(23372): Finished: medium (+2710 ms)
+10-21 13:09:42.438 I/KnHttp  (23372): --> GET https://httpbingo.org/get?p=low http/1.1
+10-21 13:09:42.601 I/KnHttp  (23372): <-- 200  https://httpbingo.org/get?p=low (162ms, unknown-length body)
+10-21 13:09:42.607 I/KnHttpSample(23372): Finished: low (+2882 ms)
+10-21 13:09:42.610 I/KnHttpSample(23372): Order: [immediate, slow, high, medium, low], limit restored to 64
+10-21 13:09:44.639 I/KnHttpSample(23372): ▶ Download 10 MB with progress
+10-21 13:09:44.649 I/KnHttp  (23372): --> GET https://speed.cloudflare.com/__down?bytes=10000000 http/1.1
+10-21 13:09:44.968 I/KnHttp  (23372): <-- 200 OK https://speed.cloudflare.com/__down?bytes=10000000 (318ms, 10000000-byte body)
+10-21 13:09:45.936 I/KnHttpSample(23372): 10,000,000 bytes in 1290 ms (7.8 MB/s), 11 progress callbacks
+10-21 13:09:50.315 I/KnHttpSample(23372): ▶ Per-request timeouts
+10-21 13:09:50.323 I/KnHttpSample(23372): Server answers after 3 s, read timeout of this request: 1 s
+10-21 13:09:50.341 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/3 http/1.1
+10-21 13:09:53.869 I/KnHttp  (23372): <-- HTTP FAILED: java.net.SocketTimeoutException: timeout
+10-21 13:09:53.870 I/KnHttpSample(23372): Timeout as expected after 3548 ms: java.net.SocketTimeoutException: timeout
+10-21 13:09:53.874 I/KnHttpSample(23372): Same request with a read timeout of 10 s...
+10-21 13:09:53.877 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/3 http/1.1
+10-21 13:09:56.857 I/KnHttpSample(23372): ▶ Upload 2 MB with progress
+10-21 13:09:57.035 I/KnHttp  (23372): <-- 200  https://httpbingo.org/delay/3 (1322ms, unknown-length body)
+10-21 13:09:57.044 I/KnHttpSample(23372): Success after 3169 ms
+10-21 13:09:57.116 I/KnHttp  (23372): --> POST https://speed.cloudflare.com/__up http/1.1 (2097441-byte body)
+10-21 13:09:57.736 I/KnHttp  (23372): <-- 200 OK https://speed.cloudflare.com/__up (619ms, 0-byte body)
+10-21 13:09:57.741 I/KnHttpSample(23372): 2,097,152 bytes uploaded in 633 ms (3.3 MB/s, HTTP 200)
+10-21 13:09:59.647 I/KnHttpSample(23372): ▶ Cancel a request
+10-21 13:09:59.663 I/KnHttp  (23372): --> GET https://httpbingo.org/delay/5 http/1.1
+10-21 13:10:00.548 I/KnHttpSample(23372): KnHttp.cancel("cancel-demo")
+10-21 13:10:00.559 I/KnHttpSample(23372): onError() after 908 ms, cancellation = true
+10-21 13:10:00.562 I/KnHttp  (23372): <-- HTTP FAILED: java.io.IOException: Canceled
+10-21 13:10:03.080 I/KnHttpSample(23372): ▶ Download 10 MB with progress
+10-21 13:10:03.097 I/KnHttp  (23372): --> GET https://speed.cloudflare.com/__down?bytes=10000000 http/1.1
+10-21 13:10:03.167 I/KnHttp  (23372): <-- 200 OK https://speed.cloudflare.com/__down?bytes=10000000 (70ms, 10000000-byte body)
+10-21 13:10:04.086 I/KnHttpSample(23372): 10,000,000 bytes in 997 ms (10.0 MB/s), 10 progress callbacks
+10-21 13:10:12.179 I/KnHttpSample(23372): ▶ Bitmap (resized to the screen)
+10-21 13:10:12.194 I/KnHttp  (23372): --> GET https://picsum.photos/1600/1200 http/1.1
+10-21 13:10:12.784 I/KnHttp  (23372): <-- 200  https://fastly.picsum.photos/id/314/1600/1200.jpg?hmac=f4gyz41RqBa-x3OwuzRRv5EBdiZ3Ul5FI3tNl3hNwjg (589ms, 314242-byte body)
+10-21 13:10:13.539 I/KnHttpSample(23372): Bitmap 420x315 RGB_565, 258 KB (1348 ms)
+10-21 13:10:15.227 I/KnHttpSample(23372): ▶ Upload 2 MB with progress
+10-21 13:10:15.321 I/KnHttp  (23372): --> POST https://speed.cloudflare.com/__up http/1.1 (2097441-byte body)
+10-21 13:10:15.885 I/KnHttp  (23372): <-- 200 OK https://speed.cloudflare.com/__up (563ms, 0-byte body)
+10-21 13:10:15.897 I/KnHttpSample(23372): 2,097,152 bytes uploaded in 581 ms (3.6 MB/s, HTTP 200)
+10-21 13:10:17.575 I/KnHttpSample(23372): ▶ KnImageLoader (memory cache, click twice)
+10-21 13:10:17.582 I/KnHttpSample(23372): Image cache created: false
+10-21 13:10:17.590 I/KnHttp  (23372): --> GET https://picsum.photos/id/237/1200/900 http/1.1
+10-21 13:10:17.627 I/KnHttp  (23372): <-- 200  https://fastly.picsum.photos/id/237/1200/900.jpg?hmac=5ncxV3oGeRGVKDDpUP1t-CdRkH_pX-1UlXVad1JPnHY (36ms, 138407-byte body)
+10-21 13:10:17.709 I/KnHttpSample(23372): Downloaded in 127 ms
+10-21 13:10:22.765 I/KnHttpSample(23372): ▶ KnImageLoader (memory cache, click twice)
+10-21 13:10:22.775 I/KnHttpSample(23372): Image cache created: true
+10-21 13:10:22.777 I/KnHttpSample(23372): From the memory cache in 2 ms
+10-21 13:10:25.951 I/KnHttpSample(23372): ▶ Cleartext HTTP request
+10-21 13:10:25.981 I/KnHttp  (23372): --> GET http://neverssl.com/ http/1.1
+10-21 13:10:30.407 I/KnHttpSample(23372): ▶ Bitmap (resized to the screen)
+10-21 13:10:30.430 I/KnHttp  (23372): --> GET https://picsum.photos/1600/1200 http/1.1
+10-21 13:10:30.591 I/KnHttp  (23372): <-- 200  https://fastly.picsum.photos/id/254/1600/1200.jpg?hmac=Zwx8UYOyoWlkn524QmxyhxRWa9Dve3dNGIjHlGLVAds (160ms, 496747-byte body)
+10-21 13:10:30.773 I/KnHttpSample(23372): Bitmap 420x315 RGB_565, 258 KB (354 ms)
+10-21 13:10:31.596 I/KnHttpSample(23372): ▶ Synchronous request (background thread)
+10-21 13:10:31.606 I/KnHttp  (23372): --> GET https://jsonplaceholder.typicode.com/posts/1 http/1.1
+10-21 13:10:31.683 I/KnHttp  (23372): <-- 200  https://jsonplaceholder.typicode.com/posts/1 (76ms, unknown-length body)
+10-21 13:10:31.689 I/KnHttpSample(23372): Sync on pool-3-thread-1: "sunt aut facere repellat provident occaecati excepturi optio reprehenderit" (86 ms)
+10-21 13:10:36.018 I/KnHttpSample(23372): ▶ KnImageLoader (memory cache, click twice)
+10-21 13:10:36.026 I/KnHttpSample(23372): Image cache created: true
+10-21 13:10:36.029 I/KnHttpSample(23372): From the memory cache in 3 ms
+10-21 13:10:36.048 I/KnHttpSample(23372): ▶ Shared OkHttpClient (Socket.IO style)
+10-21 13:10:36.060 I/KnHttp  (23372): --> GET https://www.cloudflare.com/cdn-cgi/trace http/1.1
+10-21 13:10:36.113 I/KnHttp  (23372): <-- 200  https://www.cloudflare.com/cdn-cgi/trace (52ms, unknown-length body)
+10-21 13:10:36.118 I/KnHttpSample(23372): Plain OkHttp call with KnHttp's client: h2, TLSv1.3
+17
+37

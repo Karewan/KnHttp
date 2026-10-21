@@ -1,0 +1,42 @@
+plugins {
+	alias(libs.plugins.android.application)
+}
+
+// Test app to try KnHttp on a phone (not published): ./gradlew :sample:installDebug
+android {
+	namespace = 'ovh.karewan.knhttp.sample'
+	compileSdk = 37
+
+	defaultConfig {
+		applicationId = 'ovh.karewan.knhttp.sample'
+		// Same minSdk as the library: the TLS checks are useful on old devices too
+		minSdk = 21
+		targetSdk = 37
+		versionCode = 1
+		versionName = '5.0.0'
+	}
+
+	buildFeatures {
+		buildConfig = true
+	}
+
+	buildTypes {
+		release {
+			minifyEnabled = false
+		}
+	}
+
+	lint {
+		abortOnError = false
+		checkReleaseBuilds = false
+	}
+
+	compileOptions {
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
+	}
+}
+
+dependencies {
+	implementation(project(':knhttp'))
+}

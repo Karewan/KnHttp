@@ -1,0 +1,38 @@
+plugins {
+	alias(libs.plugins.android.library)
+	alias(libs.plugins.androidx.benchmark)
+}
+
+// Microbenchmarks of KnHttp, run on a real device (not published):
+// ./gradlew :benchmark:connectedReleaseAndroidTest
+android {
+	namespace = 'ovh.karewan.knhttp.benchmark'
+	compileSdk = 37
+
+	defaultConfig {
+		minSdk = 23
+		testInstrumentationRunner 'androidx.benchmark.junit4.AndroidBenchmarkRunner'
+	}
+
+	testBuildType = 'release'
+
+	buildTypes {
+		release {
+			minifyEnabled = false
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
+	}
+}
+
+dependencies {
+	androidTestImplementation(project(':knhttp'))
+	androidTestImplementation(libs.androidx.benchmark.junit4)
+	androidTestImplementation(libs.androidx.test.runner)
+	androidTestImplementation(libs.androidx.test.ext.junit)
+	androidTestImplementation(libs.junit)
+	androidTestImplementation(libs.okhttp.mockwebserver)
+}

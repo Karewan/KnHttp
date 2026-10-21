@@ -1,7 +1,11 @@
 package ovh.karewan.knhttp.common;
 
 /*
- * Priority levels recognized by the request server.
+ * Priority of the asynchronous requests.
+ *
+ * While less requests than the limit (KnHttp.setMaxConcurrentRequests(), 64 by default) are running,
+ * a new request starts at once whatever its priority: the priority only orders the requests waiting
+ * when the limit is reached.
  */
 @SuppressWarnings("unused")
 public enum Priority {
@@ -16,17 +20,17 @@ public enum Priority {
 	LOW,
 
 	/**
-	 * Medium priority level. Used for warming of data that might soon get visible.
+	 * Default priority level.
 	 */
 	MEDIUM,
 
 	/**
-	 * Highest priority level. Used for data that are currently visible on screen.
+	 * Used for data that are currently visible on screen.
 	 */
 	HIGH,
 
 	/**
-	 * Highest priority level. Used for data that are required instantly(mainly for emergency).
+	 * Data required instantly: always started at once, ignores (and doesn't count in) the concurrent requests limit.
 	 */
 	IMMEDIATE
 }

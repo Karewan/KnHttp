@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	android:orientation="vertical"
+	android:padding="8dp">
+
+	<TextView
+		android:id="@+id/info"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="12sp" />
+
+	<ProgressBar
+		android:id="@+id/progress"
+		style="@android:style/Widget.Material.ProgressBar.Horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:max="1000" />
+
+	<ImageView
+		android:id="@+id/image"
+		android:layout_width="match_parent"
+		android:layout_height="120dp"
+		android:contentDescription="@null"
+		android:scaleType="fitCenter" />
+
+	<ScrollView
+		android:id="@+id/log_scroll"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:background="#11000000">
+
+		<TextView
+			android:id="@+id/log"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:fontFamily="monospace"
+			android:padding="4dp"
+			android:textIsSelectable="true"
+			android:textSize="11sp" />
+	</ScrollView>
+
+	<EditText
+		android:id="@+id/lan_url"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/lan_url_hint"
+		android:importantForAutofill="no"
+		android:inputType="textUri"
+		android:text="@string/lan_url_default" />
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1.2">
+
+		<LinearLayout
+			android:id="@+id/buttons"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" />
+	</ScrollView>
+
+</LinearLayout>

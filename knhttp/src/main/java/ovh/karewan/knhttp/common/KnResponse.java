@@ -1,5 +1,7 @@
 package ovh.karewan.knhttp.common;
 
+import androidx.annotation.Nullable;
+
 import ovh.karewan.knhttp.error.KnError;
 
 import okhttp3.Response;
@@ -47,6 +49,11 @@ public final class KnResponse<T> {
 		this.response = response;
 	}
 
+	/**
+	 * The OkHttp response. Its body is already consumed and closed, except for
+	 * {@link KnRequest#executeForOkHttpResponse()} where the caller must close it.
+	 */
+	@Nullable
 	public Response getOkHttpResponse() {
 		return response;
 	}
