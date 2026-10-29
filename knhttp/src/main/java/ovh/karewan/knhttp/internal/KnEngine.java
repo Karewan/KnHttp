@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
 
 /**
@@ -75,7 +76,7 @@ public final class KnEngine {
 	public void init(@Nullable Context context, @Nullable KnSettings settings) {
 		mClientProvider.configure(context, settings);
 		if (context != null) KnImageLoader.registerMemoryCallbacks(context);
-		prewarm();
+		prewarm(context);
 	}
 
 	public void init(@NonNull OkHttpClient okHttpClient) {
@@ -83,12 +84,15 @@ public final class KnEngine {
 	}
 
 	/**
-	 * Builds the client (Conscrypt native library loading, TLS context...) off the main thread
+	 * Builds the client (Conscrypt native library loading, TLS context...) off the main thread.
+	 * OkHttp's context is normally given by OkHttpInitializer, given again here in case the app disables androidx.startup
+	 * (does nothing when it is already set).
 	 */
-	private void prewarm() {
+	private void prewarm(@Nullable Context context) {
 		try {
 			mDispatcher.execute(() -> {
 				try {
+					if (context != null) OkHttp.INSTANCE.initialize(context);
 					mClientProvider.getBaseClient();
 				} catch (Throwable t) {
 					// Never crash the app from a pool thread: the first request will report the error

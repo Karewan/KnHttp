@@ -1,6 +1,11 @@
 KnHttp Change Log
 ==========
 
+Version 5.0.1 *(2026-10-29)*
+----------------------------
+* **Faster startup:** OkHttp 5's androidx.startup initializer detects the platform on the main thread, before `Application.onCreate()`. KnHttp replaces it with its own initializer, which gives OkHttp its context from a background thread. On a Galaxy A21s this removes 20 to 30 ms of main-thread work in release builds, and about 270 ms in debug builds.
+  * If your app disables androidx.startup, call `KnHttp.init(context)` early: it gives OkHttp its context too. OkHttp needs it for the cookies with a `Domain` attribute and for `HttpUrl.topPrivateDomain()`, in all the OkHttp clients of the app.
+
 Version 5.0.0 *(2026-10-21)*
 ----------------------------
 **Breaking changes:** read the [migration guide](MIGRATION.md).

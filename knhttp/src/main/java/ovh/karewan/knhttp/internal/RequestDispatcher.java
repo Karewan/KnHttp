@@ -36,7 +36,7 @@ public final class RequestDispatcher {
 
 	// Slightly above the background priority: background threads are confined to the little cores,
 	// while these threads also parse JSON and decode bitmaps
-	private static final int THREAD_PRIORITY = Process.THREAD_PRIORITY_BACKGROUND + Process.THREAD_PRIORITY_MORE_FAVORABLE;
+	static final int THREAD_PRIORITY = Process.THREAD_PRIORITY_BACKGROUND + Process.THREAD_PRIORITY_MORE_FAVORABLE;
 
 	private static final Comparator<InternalRunnable> QUEUE_ORDER = (a, b) -> {
 		if (a.getPriority() != b.getPriority()) return Integer.compare(b.getPriority().ordinal(), a.getPriority().ordinal());

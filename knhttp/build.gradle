@@ -4,7 +4,7 @@ plugins {
 }
 
 // Single source of truth for the library version (BuildConfig, default User-Agent and publication)
-def knHttpVersion = '5.0.0'
+def knHttpVersion = '5.0.1'
 // JitPack publishes the requested tag, commit or branch: it passes it with -Pversion
 def publicationVersion = project.version.toString() in ['', 'unspecified'] ? knHttpVersion : project.version.toString()
 
@@ -62,6 +62,8 @@ dependencies {
 	implementation(platform(libs.kotlin.bom))
 	// Annotations used by the public API (@NonNull, @RestrictTo...)
 	api(libs.androidx.annotation)
+	// OkHttpInitializer
+	implementation(libs.androidx.startup.runtime)
 	implementation(libs.conscrypt.android)
 	api(libs.okio)
 	api(libs.okhttp)

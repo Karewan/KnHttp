@@ -39,7 +39,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.Karewan:KnHttp:5.0.0'
+	implementation 'com.github.Karewan:KnHttp:5.0.1'
 }
 ```
 
@@ -342,7 +342,7 @@ The `KnImageLoader` memory cache costs nothing until first used.
 
 ```java
 KnHttp.enableLogging(Level.HEADERS);  // Logcat, tag "KnHttp" (default level: BASIC)
-KnHttp.setUserAgent("MyApp/1.0");     // Default "KnHttp/5.0.0". Precedence: User-Agent header > setUserAgent() per request > global
+KnHttp.setUserAgent("MyApp/1.0");     // Default "KnHttp/5.0.1". Precedence: User-Agent header > setUserAgent() per request > global
 KnHttp.shutDown();                    // Cancels everything, releases the threads and idle connections
 ```
 
@@ -352,12 +352,14 @@ KnHttp.shutDown();                    // Cancels everything, releases the thread
 -keep class com.example.model.** { *; }
 ```
 
+**Startup**: KnHttp replaces OkHttp's androidx.startup initializer, which runs on the main thread, with one that gives OkHttp its context from a background thread. If your app disables androidx.startup, call `KnHttp.init(context)` before the first request (with `KnHttp.init(okHttpClient)`, call `OkHttp.INSTANCE.initialize(context)` yourself). OkHttp needs this context for the cookies with a `Domain` attribute.
+
 ## Development
 
 | Android Studio run configuration | Gradle task | Content |
 |---|---|---|
 | Unit tests | `:knhttp:testDebugUnitTest` | Robolectric, MockWebServer, JVM Conscrypt |
-| Instrumented tests (device) | `:knhttp:connectedDebugAndroidTest` | Real device (Internet needed): bundled Conscrypt, TLS 1.3, X25519 (post-quantum when enabled), HTTP/2, Android cleartext policy |
+| Instrumented tests (device) | `:knhttp:connectedDebugAndroidTest` | Real device (Internet needed): bundled Conscrypt, TLS 1.3, X25519 (post-quantum when enabled), HTTP/2, Android cleartext policy, startup initializer |
 | Benchmarks (device) | `:benchmark:connectedReleaseAndroidTest` | Microbenchmarks. Results in `benchmark/build/outputs` |
 
 The `sample` app (Android 5.0+) has one button per feature: TLS check, JSON, parallel requests, priorities, timeouts, cancellation, transfers, images, cleartext, LAN, synchronous calls, shared client.

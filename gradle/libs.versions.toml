@@ -1,11 +1,15 @@
 [versions]
 agp = "9.4.1"
 kotlin = "2.4.21"
+# On upgrade: check that the okhttp-android AAR manifest still declares okhttp3.internal.platform.PlatformInitializer,
+# removed by knhttp's manifest (OkHttpInitializer replaces it)
 okhttp = "5.5.0"
 okio = "3.18.2"
 conscrypt = "2.7.0"
 fastjson2 = "2.0.66.android5"
 androidx-annotation = "1.11.0"
+# Same version as the one required by okhttp-android
+androidx-startup = "1.2.0"
 junit = "4.13.2"
 robolectric = "4.17"
 androidx-test-core = "1.7.0"
@@ -16,6 +20,7 @@ androidx-benchmark = "1.5.0"
 [libraries]
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup" }
 conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscrypt" }
 conscrypt-openjdk-uber = { module = "org.conscrypt:conscrypt-openjdk-uber", version.ref = "conscrypt" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
